@@ -1,0 +1,99 @@
+/*===========================================================
+  PROJECT NAME HERE
+  By YOUR NAME HERE
+===========================================================*/
+
+:root {
+    --text-col:         #111;
+
+    --back-col:         #eee;
+    --back-col-panel:   #fff;
+
+    --border-col:       #355;
+
+    --accent-col:       #e43;
+}
+
+
+/* Overall Layout -----------------------------------------------*/
+
+html {
+    background-color: var(--back-col);
+    color: var(--text-col);
+
+    font-family: system-ui, sans-serif;
+}
+
+
+body {
+    min-height: 100dvh;
+}
+
+
+main {
+    max-width: 60rem;
+    margin-inline: auto;
+    padding: 1rem;
+}
+
+
+/* Header & Nav -----------------------------------------------*/
+
+body > header {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+
+    nav {
+        display: flex;
+        gap: 1rem;
+
+        a {
+            color: var(--accent-col);
+        }
+    }
+}
+
+
+/* Page Headings -----------------------------------------------*/
+
+main > h2 {
+    font-size: 2rem;
+    text-align: center;
+    margin-block: 2rem;
+}
+
+
+/* Notes --------------------------------------------------*/
+
+#notes {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+    align-items: start;
+
+    .note {
+        padding: 1rem;
+        box-shadow: 0 0.5rem 1rem #0004;
+        border: 1px solid var(--border-col);
+        background-color: var(--back-col-panel);
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        footer {
+            font-size: 0.8rem;
+            font-style: italic;
+        }
+
+        &.pinned {
+            border-color: var(--accent-col);
+        }
+    }
+}
+
