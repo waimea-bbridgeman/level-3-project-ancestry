@@ -1,8 +1,8 @@
-# Ansetry
+# Ancestry Tracker 
 
 ## Project Description
 
-This is an app that does somthing 
+This is an app that organises and records memories/stories in the family so they arent lost
 
 The app has the following key features:
 - Feature one
