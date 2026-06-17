@@ -1,6 +1,6 @@
-title: Flask Project Template
-description: A starter Flask, Jinja and SQLite project
-author: Digital Technologies Dept.
+title: Ancestry thing
+description: A place to store things 
+author: Billy Bridgeman
 
 # If development is true, guides will be shown
 development: true
