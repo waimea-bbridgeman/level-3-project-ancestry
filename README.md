@@ -13,7 +13,7 @@ The app has the following key features:
 
 ## Supporting Documents
 
-All documentation is hosted on [GitHubPages]
+All documentation is hosted on [GitHubPages](https://waimea-bbridgeman.github.io/level-3-project-ancestry/)
 
 Task Instructions:
 - [Instruction documents](docs/instructions/)
