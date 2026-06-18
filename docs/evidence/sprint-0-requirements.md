@@ -42,45 +42,45 @@ As im only storing records and data that have relevance to my family I doubt cop
 Storing users info will have to be hashed and stored in a secure database. 
 
 
-## NAME OF IMPLICATION 3
+##  Functionality 
 
-Replace this text with a clear explanation of what the implication means.
-
-### Relevance to the System
-
-Replace this text with an explanation of why the implication is relevant to this particular project.
-
-### Impact / Considerations
-
-Replace this text with an explanation of what you will need to consider moving forward and how the project will be impacted by this implication.
-
-
-
-## NAME OF IMPLICATION 4
-
-Replace this text with a clear explanation of what the implication means.
+Making the website work well. Things shouldnt't load slow or break. 
 
 ### Relevance to the System
 
-Replace this text with an explanation of why the implication is relevant to this particular project.
+Storing data is great but if you can't view it then its sort of pointless. 
 
 ### Impact / Considerations
 
-Replace this text with an explanation of what you will need to consider moving forward and how the project will be impacted by this implication.
+Testing on all platforms, not only computer but phone and tablet too. As well as being thorough in testing to make sure evrything works. 
 
 
 
-## NAME OF IMPLICATION 5
+## Aesthetics
 
-Replace this text with a clear explanation of what the implication means.
+Making the website look good. Usually meaning one consitent colour palet throughout the website. 
 
 ### Relevance to the System
 
-Replace this text with an explanation of why the implication is relevant to this particular project.
+This implication somewhat impacts functionality. If the website doesn't look good it can confuse the user and make the website seem dodgy. 
 
 ### Impact / Considerations
 
-Replace this text with an explanation of what you will need to consider moving forward and how the project will be impacted by this implication.
+Using one clean and consistent colour palet throughout my website 
+
+
+
+## Usability 
+
+How complex the website is to use. If the website keeps getting into dead ends (no back button) then old people might struggle to use it and younger people may find it frustrating. 
+
+### Relevance to the System
+
+Given that old people will use the site who aren't very tech savy having clear loading messages and back buttons will help them not get lost or confused. 
+
+### Impact / Considerations
+
+I will make sure that every page has a way of getting back out with clear error and status messages 
 
 
 
