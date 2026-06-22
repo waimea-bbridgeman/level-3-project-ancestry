@@ -86,41 +86,42 @@ I will make sure that every page has a way of getting back out with clear error 
 
 # User Experience (UX) Principles
 
-## NAME OF UX PRINCIPLE 1
+## Know your user
 
-Replace this text with a clear explanation of what the principle means.
-
-### Relevance to the System
-
-Replace this text with an explanation of why the principle is relevant to this particular project.
-
-### Impact / Considerations
-
-Replace this text with an explanation of what you will need to consider moving forward and how the project will be impacted by this principle.
-
-
-## NAME OF UX PRINCIPLE 2
-
-Replace this text with a clear explanation of what the principle means.
+Catering to other peoples way of doing things/thinking. Don't design the app strictly for laptop if your user will use the app on mobile. 
 
 ### Relevance to the System
 
-Replace this text with an explanation of why the principle is relevant to this particular project.
+There will be a variety of ages that use my app. This entails that users will likely use different devices to access the app. 
 
 ### Impact / Considerations
 
-Replace this text with an explanation of what you will need to consider moving forward and how the project will be impacted by this principle.
+Testing and considering the layout for mobile as well as computer. Getting feedback on both layouts should help me with this. 
 
 
-## NAME OF UX PRINCIPLE 3
+## Consistent and clear 
 
-Replace this text with a clear explanation of what the principle means.
+Keeping the layout the same throughout the app. Don't use a nav bar to access different pages then make it into a waffle menu on a different page
 
 ### Relevance to the System
 
-Replace this text with an explanation of why the principle is relevant to this particular project.
+Again, people of all ages and understanding of technology would use the app, therefore making the app clear and consistent should remove a lot of confusion for older users
 
 ### Impact / Considerations
 
-Replace this text with an explanation of what you will need to consider moving forward and how the project will be impacted by this principle.
+Follow the same clear layout throughout the app. 
+Placing buttons and links in an obvious place.
+Displaying text in a clear and concise way. 
 
+
+## Test and improve
+
+Test everything. People outside the design process should test it too. 
+
+### Relevance to the System
+
+Many older users may find themselves so deep into the website it breaks and confuses them. This means I need to test the whole website with outside people too. 
+
+### Impact / Considerations
+
+Test the whole website. 
