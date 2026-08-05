@@ -49,17 +49,18 @@ The first stage of prototyping was to explore how the UI might 'flow' between st
 
 This Figma demo shows the initial design for the UI 'flow':
 
-**FIGMA FLOW - PLACE THE FIGMA EMBED CODE HERE - MAKE SURE IT IS SET SO THAT EVERYONE CAN ACCESS IT**
+https://design.penpot.app/#/view?file-id=f0485fb1-4e63-8165-8008-39076505d61a&page-id=f0485fb1-4e63-8165-8008-39076505d61b&section=inspect&frame-id=4cb224c8-461b-806e-8008-39077882bd5e&index=0&share-id=f0485fb1-4e63-8165-8008-39207f8ccf2c
 
 ### Testing
 
-Replace this text with notes about what you did to test the UI flow and the outcome of the testing.
+I loaded my prototype version and went to every page to check if they were connected. When I was satisfied with this I gave it to my stakeholder to give me feedback. 
+he said (condensed version) "It looks like a good frame work but maybe you could add a link to a persons social media? You could also have their relation to you" 
 
 ### Changes / Improvements
 
-Replace this text with notes any improvements you made as a result of the testing.
+Based on this feedback I added the suggestions. 
 
-*IMPROVED FIGMA FLOW - PLACE THE FIGMA EMBED CODE HERE - MAKE SURE IT IS SET SO THAT EVERYONE CAN ACCESS IT*
+https://design.penpot.app/#/view?file-id=6956fb43-d0b4-807f-8008-420975b4a165&page-id=f0485fb1-4e63-8165-8008-39076505d61b&section=interactions&frame-id=4cb224c8-461b-806e-8008-39077882bd5e&index=0&share-id=83dd9eca-2062-81d6-8008-5a72ff5e916e
 
 
 ## Initial UI Prototype
