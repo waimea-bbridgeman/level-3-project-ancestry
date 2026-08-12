@@ -59,8 +59,8 @@ he said (condensed version) "It looks like a good frame work but maybe you could
 ### Changes / Improvements
 
 Based on this feedback I added the suggestions. 
-
-https://design.penpot.app/#/view?file-id=6956fb43-d0b4-807f-8008-420975b4a165&page-id=f0485fb1-4e63-8165-8008-39076505d61b&section=interactions&frame-id=4cb224c8-461b-806e-8008-39077882bd5e&index=0&share-id=83dd9eca-2062-81d6-8008-5a72ff5e916e
+screenshot
+[Click here to see the design](https://design.penpot.app/#/view?file-id=6956fb43-d0b4-807f-8008-420975b4a165&page-id=f0485fb1-4e63-8165-8008-39076505d61b&section=interactions&frame-id=4cb224c8-461b-806e-8008-39077882bd5e&index=0&share-id=83dd9eca-2062-81d6-8008-5a72ff5e916e)
 
 
 ## Initial UI Prototype
