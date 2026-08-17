@@ -1,0 +1,40 @@
+{#=====================================================
+  Home page
+=====================================================#}
+
+{% extends 'pages/_base.jinja' %}
+
+
+{% block content %}
+
+    <h2>Stories</h2>
+
+    <section id="stories">
+
+        {% for stories in stories %}
+
+            <div class="stories {{ 'pinned' if stories.pinned }}">
+
+                <header>
+                    <h3>{{ stories.title }}</h3>
+                    {{ "📌" if stories.pinned }}
+                </header>
+
+                <p>{{ stories.body | paragraphs }}</p>
+
+                <footer>
+                    Created on {{ stories.created | local | format }}
+                </footer>
+
+            </div>
+
+        {% else %}
+
+            <p>No Stories!</p>
+
+        {% endfor %}
+
+    </section>
+
+{% endblock %}
+

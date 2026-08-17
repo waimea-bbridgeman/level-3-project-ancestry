@@ -21,18 +21,18 @@ app = Flask(__name__)
 #===========================================================
 
 #-----------------------------------------------------------
-# Home page - Show all notes
+# Home page - Show all stories
 #-----------------------------------------------------------
 @app.get("/")
-def show_notes():
+def show_stories():
     with connect_db() as db:
         sql = """
             SELECT id, title, body, pinned, created
-            FROM note
+            FROM stories
             ORDER BY pinned DESC, created DESC
         """
         params = ()
-        notes = db.execute(sql, params).fetchall()
+        stories = db.execute(sql, params).fetchall()
 
         flash("Test message")
         flash("Test SUCCESS message", "success")
@@ -40,9 +40,44 @@ def show_notes():
         flash("Test WARNING message", "warning")
         flash("Test ERROR message", "error")
 
-        return render_template("pages/note_list.jinja", notes=notes)
+        return render_template("pages/story_list.jinja", stories=stories)
+    
+#-----------------------------------------------------------
+# Login page 
+#-----------------------------------------------------------
+@app.post("/login")
+def login_user():
+    username = request.form.get('username', '').strip().lower()
+    password = request.form.get('password', '').strip()
 
+    with connect_db() as db:
+        sql = """
+            SELECT id, forename, surname, password_hash
+            FROM users
+            WHERE username=?
+        """
+        params = (username,)
+        user = db.execute(sql, params).fetchone()
 
+        if not user:
+            flash(f"Unknown user", "error")
+            return redirect("/login")
+
+        if not check_password_hash(user["password_hash"], password):
+            flash(f"Incorrect password", "error")
+            return redirect("/login")
+
+        session["logged_in"] = True
+        session["user"] = {
+            "username": username,
+            "forename": user["forename"],
+            "surname":  user["surname"],
+            "id":       user["id"]
+        }
+
+        flash("Login successful", "success")
+        return redirect("/")
+    
 #===========================================================
 # Configure the app
 #===========================================================
