@@ -41,9 +41,19 @@ def show_stories():
         flash("Test ERROR message", "error")
 
         return render_template("pages/story_list.jinja", stories=stories)
-    
+
+
+
 #-----------------------------------------------------------
-# Login page 
+# Login page
+#-----------------------------------------------------------
+
+@app.get("/login")
+def show_login_form():
+    return render_template("pages/login.jinja")
+
+#-----------------------------------------------------------
+# Login uer 
 #-----------------------------------------------------------
 @app.post("/login")
 def login_user():
