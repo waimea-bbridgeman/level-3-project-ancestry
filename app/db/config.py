@@ -15,16 +15,15 @@
 #     SEED_DATA = "INSERT INTO name (...)" or None
 #----------------------------------------------------------------------------
 
-class NoteTable:
+class StoryTable:
 
-    NAME = "note"
+    NAME = "story"
 
     SCHEMA = """
-        CREATE TABLE note (
+        CREATE TABLE story (
             id      INTEGER PRIMARY KEY AUTOINCREMENT,
             title   TEXT NOT NULL,
-            body    TEXT,
-            pinned  INTEGER DEFAULT 0,
+            body    TEXT NOT NULL,
             created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """
@@ -46,19 +45,41 @@ class UserTable:
     NAME = "users"
 
     SCHEMA = """ 
-        CREATE TABLE users
+        CREATE TABLE users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             forename TEXT NOT NULL,
             surname TEXT NOT NULL, 
             username TEXT NOT NULL UNIQUE, 
             password_hash TEXT NOT NULL
+        )
     """
 
 
     SEED_DATA = """
-        INSERT INTO users (forename, surname, username, pass_hash)
+        INSERT INTO users (forename, surname, username, password_hash)
         VALUES ("Test", "User", "test", "scrypt:32768:8:1$n7eJTucLbaGmUpAM$c1776374a8d456a6eaf61bccc08db5e1fcc4ff3b3983d364c45ab13074255eeae0a393afb11f99a9fe63fb1d980992ace17a72ba70324523b11e92e36cbe4252")
     """
+
+
+# class FamilyTable:
+
+#     NAME = "users"
+
+#     SCHEMA = """ 
+#         CREATE TABLE users (
+#             id INTEGER PRIMARY KEY AUTOINCREMENT,
+#             forename TEXT NOT NULL,
+#             surname TEXT NOT NULL, 
+#             username TEXT NOT NULL UNIQUE, 
+#             password_hash TEXT NOT NULL
+#         )
+#     """
+
+
+#     SEED_DATA = """
+#         INSERT INTO users (forename, surname, username, password_hash)
+#         VALUES ("Test", "User", "test", "scrypt:32768:8:1$n7eJTucLbaGmUpAM$c1776374a8d456a6eaf61bccc08db5e1fcc4ff3b3983d364c45ab13074255eeae0a393afb11f99a9fe63fb1d980992ace17a72ba70324523b11e92e36cbe4252")
+#     """
 #----------------------------------------------------------------------------
 # Table registry
 #----------------------------------------------------------------------------
@@ -75,7 +96,8 @@ class UserTable:
 #----------------------------------------------------------------------------
 
 TABLES = [
-    NoteTable,
+    StoryTable,
+    UserTable,
     # Add more tables here...
 ]
 

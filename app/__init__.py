@@ -24,15 +24,15 @@ app = Flask(__name__)
 # Home page - Show all stories
 #-----------------------------------------------------------
 @app.get("/")
-def show_stories():
+def show_story():
     with connect_db() as db:
         sql = """
-            SELECT id, title, body, pinned, created
-            FROM stories
-            ORDER BY pinned DESC, created DESC
+            SELECT id, title, body, created
+            FROM story
+            ORDER BY created DESC
         """
         params = ()
-        stories = db.execute(sql, params).fetchall()
+        story = db.execute(sql, params).fetchall()
 
         flash("Test message")
         flash("Test SUCCESS message", "success")
@@ -40,7 +40,7 @@ def show_stories():
         flash("Test WARNING message", "warning")
         flash("Test ERROR message", "error")
 
-        return render_template("pages/story_list.jinja", stories=stories)
+        return render_template("pages/story_list.jinja", story=story)
 
 
 
