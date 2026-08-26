@@ -21,26 +21,29 @@ app = Flask(__name__)
 #===========================================================
 
 #-----------------------------------------------------------
-# Home page - Show all stories
+# Home page - Logged in
 #-----------------------------------------------------------
-@app.get("/")
-def show_story():
+@app.get("/homelog")
+def show_homelog():
     with connect_db() as db:
         sql = """
-            SELECT id, title, body, created
-            FROM story
-            ORDER BY created DESC
+            SELECT forename
+            FROM users
         """
         params = ()
-        story = db.execute(sql, params).fetchall()
+        users = db.execute(sql, params).fetchall()
 
-        flash("Test message")
-        flash("Test SUCCESS message", "success")
-        flash("Test INFO message", "info")
-        flash("Test WARNING message", "warning")
-        flash("Test ERROR message", "error")
 
-        return render_template("pages/story_list.jinja", story=story)
+    return render_template("pages/homelog.jinja", users=users)
+
+
+#-----------------------------------------------------------
+# Home page - Not logged in 
+#-----------------------------------------------------------
+@app.get("/")
+def show_home():
+
+    return render_template("pages/home.jinja") 
 
 
 
@@ -53,7 +56,7 @@ def show_login_form():
     return render_template("pages/login.jinja")
 
 #-----------------------------------------------------------
-# Login uer 
+# Login user 
 #-----------------------------------------------------------
 @app.post("/login")
 def login_user():
@@ -86,8 +89,47 @@ def login_user():
         }
 
         flash("Login successful", "success")
+        return redirect("/homelog")
+
+#-----------------------------------------------------------
+# Sign-up user 
+#-----------------------------------------------------------
+@app.post("/user")
+def process_new_user():
+    forename = request.form.get('forename', '').strip()
+    surname  = request.form.get('surname',  '').strip()
+    username = request.form.get('username', '').strip().lower()
+    password = request.form.get('password', '').strip()
+
+    with connect_db() as db:
+        sql = "SELECT id FROM users WHERE username=?"
+        params = (username,)
+        user = db.execute(sql, params).fetchone()
+
+        if user:
+            flash(f"Username '{username}' already exists", "error")
+            return redirect("/user/new")
+
+        password_hash = generate_password_hash(password)
+
+        sql = """
+            INSERT INTO users (forename, surname, username, password_hash)
+            VALUES (?, ?, ?, ?)
+        """
+        params = (forename, surname, username, password_hash)
+        db.execute(sql, params)
+
+        flash("Account created. Please login", "success")
         return redirect("/")
     
+#-----------------------------------------------------------
+# Logout
+#-----------------------------------------------------------
+@app.get("/logout")
+def logout_user():
+    session.clear()
+    flash(f"You have been logged out", "success")
+    return redirect("/")
 #===========================================================
 # Configure the app
 #===========================================================

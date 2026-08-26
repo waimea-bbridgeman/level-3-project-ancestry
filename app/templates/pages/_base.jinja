@@ -30,8 +30,16 @@
         </a>
 
         <nav>
+        {% if session.logged_in %}
+            Welcome, {{ session.user.forename }}!
+        <a href="/">Home</a>
+        <a href="/logout">Logout</a>
+        <a href="/stories">Stories</a>
+        {% else %}
+            <a href="/">Home</a>
             <a href="/login">Login</a>
-            <a href="/sign-up">Sign-up</a>
+            <a href="/user/new">Sign-Up</a>
+        {% endif %} 
         </nav>
     </header>
 

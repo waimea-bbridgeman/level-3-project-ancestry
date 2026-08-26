@@ -1,0 +1,40 @@
+{#=====================================================
+  Home page
+=====================================================#}
+
+{% extends 'pages/_base.jinja' %}
+
+
+{% block content %}
+
+    <h2>Stories</h2>
+
+    <section id="stories">
+
+        {% for stories in stories %}
+
+            <div class="stories">
+
+                <header>
+                    <h3>{{ stories.title }}</h3>
+                   
+                </header>
+
+                <p>{{ stories.body }}</p>
+
+                <footer>
+                    Date {{ stories.date }}
+                </footer>
+
+            </div>
+
+        {% else %}
+
+            <p>No Stories!</p>
+
+        {% endfor %}
+
+    </section>
+
+{% endblock %}
+
