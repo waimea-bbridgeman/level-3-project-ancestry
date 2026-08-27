@@ -92,6 +92,13 @@ def login_user():
         return redirect("/homelog")
 
 #-----------------------------------------------------------
+# Sign-up page 
+#-----------------------------------------------------------
+@app.get("/user/new")
+def show_signup_form():
+    return render_template("pages/sign-up.jinja")
+
+#-----------------------------------------------------------
 # Sign-up user 
 #-----------------------------------------------------------
 @app.post("/user")
@@ -120,8 +127,53 @@ def process_new_user():
         db.execute(sql, params)
 
         flash("Account created. Please login", "success")
-        return redirect("/")
-    
+        return redirect("/homelog")
+   
+#-----------------------------------------------------------
+# Show Story Form
+#-----------------------------------------------------------
+@app.get("/story/new")
+def show_story_form():
+    return render_template("pages/story_form.jinja")
+
+#-----------------------------------------------------------
+# Post story
+#-----------------------------------------------------------
+@app.post("/story")
+def post_story():
+
+    # Get form data
+    title = request.form.get('title', '').strip()
+    body = request.form.get('body', '').strip()
+
+    # Validate data
+    if not title:
+        flash("Title is required", "error")
+        return redirect("/story/new")
+
+    if len(title) > 40:
+        flash("Title is too long (max 40 chars)", "error")
+        return redirect("/story/new")
+
+    # Escape text inputs
+    title = html.escape(title)
+    body = html.escape(body)
+
+    user_id = session["user"]["id"]
+
+    # Add to database
+    with connect_db() as db:
+        sql = """
+            INSERT INTO story (title, body, user_id)
+            VALUES (?, ?, ?)
+        """
+        params = (title, body, user_id)
+        db.execute(sql, params)
+
+    flash(f"Story added")
+    return redirect("/homelog")
+
+
 #-----------------------------------------------------------
 # Logout
 #-----------------------------------------------------------

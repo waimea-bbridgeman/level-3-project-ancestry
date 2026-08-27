@@ -15,6 +15,42 @@
 #     SEED_DATA = "INSERT INTO name (...)" or None
 #----------------------------------------------------------------------------
 
+class PeopleTable:
+
+    NAME = "people"
+
+    SCHEMA = """ 
+        CREATE TABLE people (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            forename TEXT NOT NULL,
+            surname TEXT NOT NULL, 
+            notes TEXT, 
+            dob TEXT
+        )
+    """
+
+
+    SEED_DATA = """
+        INSERT INTO people (forename, surname)
+        VALUES ("Test", "User")
+    """
+class InvolvesTable:
+
+    NAME = "involves"
+
+    SCHEMA = """ 
+        CREATE TABLE involves (
+            story_id,
+            person_id
+        )
+    """
+
+
+    SEED_DATA = """
+        INSERT INTO involves (story_id,)
+        VALUES ("Test", "User", "test", "scrypt:32768:8:1$n7eJTucLbaGmUpAM$c1776374a8d456a6eaf61bccc08db5e1fcc4ff3b3983d364c45ab13074255eeae0a393afb11f99a9fe63fb1d980992ace17a72ba70324523b11e92e36cbe4252")
+    """
+
 class StoryTable:
 
     NAME = "story"
@@ -60,25 +96,7 @@ class UserTable:
     """
 
 
-# class FamilyTable:
 
-#     NAME = "users"
-
-#     SCHEMA = """ 
-#         CREATE TABLE users (
-#             id INTEGER PRIMARY KEY AUTOINCREMENT,
-#             forename TEXT NOT NULL,
-#             surname TEXT NOT NULL, 
-#             username TEXT NOT NULL UNIQUE, 
-#             password_hash TEXT NOT NULL
-#         )
-#     """
-
-
-#     SEED_DATA = """
-#         INSERT INTO users (forename, surname, username, password_hash)
-#         VALUES ("Test", "User", "test", "scrypt:32768:8:1$n7eJTucLbaGmUpAM$c1776374a8d456a6eaf61bccc08db5e1fcc4ff3b3983d364c45ab13074255eeae0a393afb11f99a9fe63fb1d980992ace17a72ba70324523b11e92e36cbe4252")
-#     """
 #----------------------------------------------------------------------------
 # Table registry
 #----------------------------------------------------------------------------

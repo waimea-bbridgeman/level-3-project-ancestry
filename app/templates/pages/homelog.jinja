@@ -7,9 +7,32 @@
 
 {% block content %}
 
-    <h2>You're logged in</h2>
+    <h2>My Stories</h2>
 
-   
+    <section id="my-stories">
+
+    
+        {% for story in stories %}
+
+            <div class="story-item">
+                <h3>{{ story.title }}</h3>
+                <p>{{ story.body }}</p>
+                
+
+                {% if session.logged_in and story.uid == session.user.id %}
+                    <button id="story-button"><a href="/story/delete/{{ story.mid }}" onclick="return confirm('Really delete?');">Delete</a></button>
+                    <button id="story-button"><a href="/message/edit/{{ story.mid }}">Edit</a></button>
+                {% endif %}
+            </div>
+            
+                
+        {% else %}
+
+            <p>No Storys!</p>
+
+        {% endfor %}
+
+    </section>
 
 {% endblock %}
 
