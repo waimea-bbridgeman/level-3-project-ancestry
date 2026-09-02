@@ -1,6 +1,6 @@
 #===========================================================
-# PROJECT NAME HERE
-# By YOUR NAME HERE
+# Ancestry Tracker
+# By Billy Bridgeman
 #===========================================================
 
 from flask import Flask, request, session, render_template, flash, redirect, send_file, make_response
@@ -48,7 +48,7 @@ def show_home():
 
 
 #-----------------------------------------------------------
-# Login page
+# Login Page
 #-----------------------------------------------------------
 
 @app.get("/login")
@@ -56,7 +56,7 @@ def show_login_form():
     return render_template("pages/login.jinja")
 
 #-----------------------------------------------------------
-# Login user 
+# Login User 
 #-----------------------------------------------------------
 @app.post("/login")
 def login_user():
@@ -92,14 +92,14 @@ def login_user():
         return redirect("/homelog")
 
 #-----------------------------------------------------------
-# Sign-up page 
+# Sign-up Page 
 #-----------------------------------------------------------
 @app.get("/user/new")
 def show_signup_form():
     return render_template("pages/sign-up.jinja")
 
 #-----------------------------------------------------------
-# Sign-up user 
+# Sign-up User 
 #-----------------------------------------------------------
 @app.post("/user")
 def process_new_user():
@@ -137,7 +137,7 @@ def show_story_form():
     return render_template("pages/story_form.jinja")
 
 #-----------------------------------------------------------
-# Post story
+# Post Story
 #-----------------------------------------------------------
 @app.post("/story")
 def post_story():
@@ -173,6 +173,12 @@ def post_story():
     flash(f"Story added")
     return redirect("/homelog")
 
+#-----------------------------------------------------------
+# Stories Page
+#-----------------------------------------------------------
+@app.get("/stories")
+def show_stories():
+    return render_template("pages/stories.jinja")
 
 #-----------------------------------------------------------
 # Logout

@@ -47,8 +47,25 @@ class InvolvesTable:
 
 
     SEED_DATA = """
-        INSERT INTO involves (story_id,)
-        VALUES ("Test", "User", "test", "scrypt:32768:8:1$n7eJTucLbaGmUpAM$c1776374a8d456a6eaf61bccc08db5e1fcc4ff3b3983d364c45ab13074255eeae0a393afb11f99a9fe63fb1d980992ace17a72ba70324523b11e92e36cbe4252")
+        
+    """
+
+
+class ImagesTable:
+
+    NAME = "images"
+
+    SCHEMA = """ 
+        CREATE TABLE images (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            filename TEXT NOT NULL,
+            story_id INTEGER
+        )
+    """
+
+
+    SEED_DATA = """
+        
     """
 
 class StoryTable:
@@ -113,6 +130,9 @@ class UserTable:
 #----------------------------------------------------------------------------
 
 TABLES = [
+    PeopleTable, 
+    InvolvesTable,
+    ImagesTable,
     StoryTable,
     UserTable,
     # Add more tables here...
