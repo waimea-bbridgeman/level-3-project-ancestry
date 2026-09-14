@@ -29,7 +29,7 @@
         <nav>
         {% if session.logged_in %}
             Welcome, {{ session.user.forename }}!
-        <a href="/">Home</a>
+        <a href="/homelog">Home</a>
         <a href="/logout">Logout</a>
         <a href="/stories">Stories</a>
         {% else %}

@@ -32,7 +32,7 @@ class PeopleTable:
 
     SEED_DATA = """
         INSERT INTO people (forename, surname)
-        VALUES ("Test", "User")
+        VALUES ("Johnny", "Pigman")
     """
 class InvolvesTable:
 
@@ -65,7 +65,8 @@ class ImagesTable:
 
 
     SEED_DATA = """
-        
+         INSERT INTO images (filename, story_id)
+        VALUES ("docs/evidence/screenshots/V1.png", "1")
     """
 
 class StoryTable:
@@ -75,19 +76,20 @@ class StoryTable:
     SCHEMA = """
         CREATE TABLE story (
             id  INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id TEXT NOT NULL,
             title   TEXT NOT NULL, 
             body    TEXT NOT NULL,
             date    TEXT
 
+            user_id INTEGER NOT NULL
+            
             FOREIGN KEY(user_id) REFERENCES users(id)
         )
     """
 
     SEED_DATA = """
-        INSERT INTO story (title, body)
+        INSERT INTO story (user_id, title, body)
         VALUES
-            ("Treacherous Journey", "The journey was treacherous.")
+            ("", "Treacherous Journey", "The journey was treacherous.")
     """
 
 # Add more table classes here...
