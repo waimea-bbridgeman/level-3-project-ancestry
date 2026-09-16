@@ -132,14 +132,14 @@ def process_new_user():
 #-----------------------------------------------------------
 # Show Story Form
 #-----------------------------------------------------------
-@app.get("/story/new")
+@app.get("/story")
 def show_story_form():
     return render_template("pages/story_form.jinja")
 
 #-----------------------------------------------------------
 # Post Story
 #-----------------------------------------------------------
-@app.post("/story")
+@app.post("/story/new")
 def post_story():
 
     # Get form data
@@ -164,10 +164,10 @@ def post_story():
     # Add to database
     with connect_db() as db:
         sql = """
-            INSERT INTO story (title, body, user_id)
-            VALUES (?, ?, ?)
+            INSERT INTO story (title, body)
+            VALUES (?, ?)
         """
-        params = (title, body, user_id)
+        params = (title, body)
         db.execute(sql, params)
 
     flash(f"Story added")

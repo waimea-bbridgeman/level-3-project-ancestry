@@ -2,30 +2,32 @@
   Add Story Page
 =====================================================#}
 
-{% extends 'pages/base.jinja' %}
+{% extends 'pages/_base.jinja' %}
 
 
 {% block content %}
 
-    <h1 class="story-form">Post a new story!</h1>
+<div class="storyform">
+    <h1>Post a new story!</h1>
 
-    <form method="post" action="/story">
-    <h3>New Story</h3>
+    <form method="post" action="/story/new">
+        <h3>New Story</h3>
 
-    <label>
+     <label>
         Title
         <input name="title" type="text" placeholder="e.g. Rodney meets Trig " required>
-    </label>
+     </label>
 
-    <label>
+     <label>
         Body
         <textarea name="body" placeholder="e.g. Trig called Rodney Dave" required></textarea>
-    </label>
+     </label>
 
 
-    <button>Add Story</button>
-    <button>Cancel</button>
-</form>
+     <button>Add Story</button>
+     <button>Cancel</button>
+    </form>
+</div>
 
 {% endblock %}
 

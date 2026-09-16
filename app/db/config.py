@@ -89,7 +89,7 @@ class StoryTable:
     SEED_DATA = """
         INSERT INTO story (user_id, title, body)
         VALUES
-            ("", "Treacherous Journey", "The journey was treacherous.")
+            ("1", "Treacherous Journey", "The journey was treacherous.")
     """
 
 # Add more table classes here...
