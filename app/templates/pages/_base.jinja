@@ -25,13 +25,22 @@
 <body>
 
     <header>
+        <label id="toggle">
+            MENU
+            <input type="checkbox">
+        </label>
 
         <nav>
         {% if session.logged_in %}
             Welcome, {{ session.user.forename }}!
         <a href="/homelog">Home</a>
-        <a href="/logout">Logout</a>
         <a href="/stories">Stories</a>
+        <a href="/fam/new">Create Family</a>
+        <a href="join">Join Family</a>
+        <a href="people/new">Add Person</a>
+        <a href="people">All People</a>
+        <a href="code">Join Code</a>
+        <a href="/logout">Logout</a>
         {% else %}
             <a href="/">Home</a>
             <a href="/login">Login</a>

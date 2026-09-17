@@ -1,0 +1,40 @@
+{% extends "pages/_base.jinja" %}
+
+{% block title %}
+    Add Person
+{% endblock %}
+
+{% block content %}
+   
+  <h2>Add a person</h2>
+
+    <form method="post" action="/user">
+
+          <label>
+            Forename 
+            <input type="text" name="forename" required>
+          </label>
+
+
+          <label>
+            Surname 
+            <input type="text" name="surname" required>
+          </label>
+    
+
+          <label>
+            notes
+            <input type="text" name="username" required>
+          </label>
+    
+
+        <label>
+           Date of Birth
+            <input type="password" name="password" required>
+        </label>
+    
+        <button>Add</button>
+        <button>Cancel</button>
+    
+    </form>
+{% endblock %}

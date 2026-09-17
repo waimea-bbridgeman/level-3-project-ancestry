@@ -1,5 +1,5 @@
 {#=====================================================
-  Home page
+  All People
 =====================================================#}
 
 {% extends 'pages/_base.jinja' %}
@@ -7,9 +7,9 @@
 
 {% block content %}
 
-    <h2>Stories</h2>
+    <h2>All People</h2>
 
-    <section id="stories">
+    <section id="people">
 
         {% for people in peoples %}
 
@@ -28,11 +28,9 @@
 
         {% else %}
 
-            <p>No Stories!</p>
+            <p>No People!</p>
 
         {% endfor %}
-
-        <a href="/story_form"><button>Add Story</button></a>
 
     </section>
 

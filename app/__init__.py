@@ -128,7 +128,34 @@ def process_new_user():
 
         flash("Account created. Please login", "success")
         return redirect("/homelog")
-   
+#-----------------------------------------------------------
+# Stories Page
+#-----------------------------------------------------------
+@app.get("/stories")
+def show_stories():
+    return render_template("pages/stories.jinja")
+
+#-----------------------------------------------------------
+# New Family Page
+#-----------------------------------------------------------
+@app.get("/fam/new")
+def create_fam():
+    return render_template("pages/create_fam.jinja")
+
+#-----------------------------------------------------------
+# Join Family Page
+#-----------------------------------------------------------
+@app.get("/join_fam")
+def join_fam():
+    return render_template("pages/join_fam.jinja")
+
+#-----------------------------------------------------------
+# Add Person Page
+#-----------------------------------------------------------
+@app.get("/people/new")
+def add_person():
+    return render_template("pages/add_person.jinja")
+
 #-----------------------------------------------------------
 # Show Story Form
 #-----------------------------------------------------------
@@ -173,12 +200,6 @@ def post_story():
     flash(f"Story added")
     return redirect("/homelog")
 
-#-----------------------------------------------------------
-# Stories Page
-#-----------------------------------------------------------
-@app.get("/stories")
-def show_stories():
-    return render_template("pages/stories.jinja")
 
 #-----------------------------------------------------------
 # Logout
