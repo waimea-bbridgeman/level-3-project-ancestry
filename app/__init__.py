@@ -2,7 +2,8 @@
 # Ancestry Tracker
 # By Billy Bridgeman
 #===========================================================
-
+import random
+import string
 from flask import Flask, request, session, render_template, flash, redirect, send_file, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
@@ -136,18 +137,47 @@ def show_stories():
     return render_template("pages/stories.jinja")
 
 #-----------------------------------------------------------
-# New Family Page
+# Create Family Page
 #-----------------------------------------------------------
 @app.get("/fam/new")
-def create_fam():
+def show_create_fam():
     return render_template("pages/create_fam.jinja")
+#-----------------------------------------------------------
+# Create Family 
+#-----------------------------------------------------------
+@app.post("/fam/new")
+def create_fam():
+    surname  = request.form.get('surname',  '').strip()
+   
+    with connect_db() as db:
+        sql = """
+            INSERT INTO families (surname)
+            VALUES (?)
+        """
+        params = (surname,)
+        db.execute(sql, params)
 
+        return redirect("/homelog")
 #-----------------------------------------------------------
 # Join Family Page
 #-----------------------------------------------------------
 @app.get("/join_fam")
 def join_fam():
     return render_template("pages/join_fam.jinja")
+
+
+# def generate_random_code(length: int = 6) -> str:
+#     characters = string.ascii_letters + string.digits
+#     return "".join(random.choices(characters, k=length))
+
+
+# def main() -> None:
+#     code = generate_random_code(6)
+#     print(code)
+
+
+# if __name__ == "__main__":
+#     main()
 
 #-----------------------------------------------------------
 # Add Person Page
@@ -191,15 +221,14 @@ def post_story():
     # Add to database
     with connect_db() as db:
         sql = """
-            INSERT INTO story (title, body)
-            VALUES (?, ?)
+            INSERT INTO story (title, body, user_id)
+            VALUES (?, ?, ?)
         """
         params = (title, body)
         db.execute(sql, params)
 
     flash(f"Story added")
     return redirect("/homelog")
-
 
 #-----------------------------------------------------------
 # Logout

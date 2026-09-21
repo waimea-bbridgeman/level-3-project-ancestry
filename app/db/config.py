@@ -14,6 +14,26 @@
 #     SCHEMA    = "CREATE TABLE name (...)"
 #     SEED_DATA = "INSERT INTO name (...)" or None
 #----------------------------------------------------------------------------
+class UserTable:
+
+    NAME = "users"
+
+    SCHEMA = """ 
+        CREATE TABLE users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            forename TEXT NOT NULL,
+            surname TEXT NOT NULL, 
+            username TEXT NOT NULL UNIQUE, 
+            password_hash TEXT NOT NULL
+        )
+    """
+
+
+    SEED_DATA = """
+        INSERT INTO users (forename, surname, username, password_hash)
+        VALUES ("Test", "User", "test", "scrypt:32768:8:1$n7eJTucLbaGmUpAM$c1776374a8d456a6eaf61bccc08db5e1fcc4ff3b3983d364c45ab13074255eeae0a393afb11f99a9fe63fb1d980992ace17a72ba70324523b11e92e36cbe4252")
+    """
+
 
 class PeopleTable:
 
@@ -71,48 +91,46 @@ class ImagesTable:
 
 class StoryTable:
 
-    NAME = "story"
+    NAME = "stories"
 
     SCHEMA = """
-        CREATE TABLE story (
+        CREATE TABLE stories (
             id  INTEGER PRIMARY KEY AUTOINCREMENT,
             title   TEXT NOT NULL, 
             body    TEXT NOT NULL,
-            date    TEXT
+            date    TEXT,
 
-            user_id INTEGER NOT NULL
+            user_id INTEGER NOT NULL,
             
             FOREIGN KEY(user_id) REFERENCES users(id)
         )
     """
 
     SEED_DATA = """
-        INSERT INTO story (user_id, title, body)
+        INSERT INTO stories (user_id, title, body, date)
         VALUES
-            ("1", "Treacherous Journey", "The journey was treacherous.")
+            ("1", "Treacherous Journey", "The journey was treacherous.", "2025-12-12")
     """
 
-# Add more table classes here...
+class FamiliesTable:
 
-class UserTable:
-
-    NAME = "users"
+    NAME = "families"
 
     SCHEMA = """ 
-        CREATE TABLE users (
+        CREATE TABLE families (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            forename TEXT NOT NULL,
-            surname TEXT NOT NULL, 
-            username TEXT NOT NULL UNIQUE, 
-            password_hash TEXT NOT NULL
+            code TEXT,
+            surname TEXT NOT NULL
         )
     """
 
 
     SEED_DATA = """
-        INSERT INTO users (forename, surname, username, password_hash)
-        VALUES ("Test", "User", "test", "scrypt:32768:8:1$n7eJTucLbaGmUpAM$c1776374a8d456a6eaf61bccc08db5e1fcc4ff3b3983d364c45ab13074255eeae0a393afb11f99a9fe63fb1d980992ace17a72ba70324523b11e92e36cbe4252")
+         INSERT INTO families (code, surname)
+        VALUES ("XTTYVB", "Williams")
     """
+
+# Add more table classes here...
 
 
 
@@ -137,6 +155,7 @@ TABLES = [
     ImagesTable,
     StoryTable,
     UserTable,
+    FamiliesTable,
     # Add more tables here...
 ]
 
