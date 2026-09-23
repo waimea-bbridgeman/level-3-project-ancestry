@@ -133,9 +133,21 @@ def process_new_user():
 # Stories Page
 #-----------------------------------------------------------
 @app.get("/stories")
-def show_stories():
-    return render_template("pages/stories.jinja")
+def show_all_stories():
+    with connect_db() as db:
+        sql = """ 
+            SELECT 
+                stories.id, 
+                stories.title, 
+                stories.date,
+                stories.body
 
+            FROM stories
+        """
+        params = ()
+        stories = db.execute(sql, params).fetchall()
+
+        return render_template("pages/stories.jinja", stories=stories)
 #-----------------------------------------------------------
 # Create Family Page
 #-----------------------------------------------------------
@@ -202,6 +214,8 @@ def post_story():
     # Get form data
     title = request.form.get('title', '').strip()
     body = request.form.get('body', '').strip()
+    date = request.form.get('date', '').strip()
+    
 
     # Validate data
     if not title:
@@ -215,16 +229,17 @@ def post_story():
     # Escape text inputs
     title = html.escape(title)
     body = html.escape(body)
+    date = html.escape(date)
 
     user_id = session["user"]["id"]
 
     # Add to database
     with connect_db() as db:
         sql = """
-            INSERT INTO story (title, body, user_id)
-            VALUES (?, ?, ?)
+            INSERT INTO stories (title, body, date, user_id)
+            VALUES (?, ?, ?, ?)
         """
-        params = (title, body)
+        params = (title, body, date, user_id)
         db.execute(sql, params)
 
     flash(f"Story added")

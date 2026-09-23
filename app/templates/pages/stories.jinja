@@ -1,5 +1,5 @@
 {#=====================================================
-  Home page
+  Story display page
 =====================================================#}
 
 {% extends 'pages/_base.jinja' %}
@@ -8,22 +8,24 @@
 {% block content %}
 
     <h2>Stories</h2>
+    
+    <button id="story-button"><a href="/story">Add Story</a></button>
 
     <section id="stories">
 
-        {% for stories in stories %}
-
+        {% for story in stories %}
+      
             <div class="stories">
 
                 <header>
-                    <h3>{{ stories.title }}</h3>
+                    <h3>{{ story.title }}</h3>
                    
                 </header>
 
-                <p>{{ stories.body }}</p>
+                <p>{{ story.body }}</p>
 
                 <footer>
-                    Date {{ stories.date }}
+                    Date: {{ story.date }}
                 </footer>
 
             </div>
@@ -34,7 +36,7 @@
 
         {% endfor %}
 
-        <button id="story-button"><a href="/story">Add Story</a></button>
+        
 
     </section>
 
