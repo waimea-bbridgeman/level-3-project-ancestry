@@ -161,15 +161,35 @@ def show_create_fam():
 def create_fam():
     surname  = request.form.get('surname',  '').strip()
    
+    code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+
     with connect_db() as db:
         sql = """
-            INSERT INTO families (surname)
-            VALUES (?)
+            INSERT INTO families (surname, code)
+            VALUES (?, ?)
         """
-        params = (surname,)
+        params = (surname, code)
         db.execute(sql, params)
+        flash(f"Family created! Your family code is {code}", "success")
 
         return redirect("/homelog")
+#-----------------------------------------------------------
+# Join Code Page
+#-----------------------------------------------------------
+@app.get("/join_code")
+def join_code():
+    with connect_db() as db:
+        sql = """ 
+            SELECT families.code
+            FROM families
+            JOIN family_members ON family_members.family_id = families.id
+            WHERE family_members.user_id = ?
+        """
+        params = ()
+        code = db.execute(sql, params).fetchone()
+
+    return render_template("pages/join_code.jinja", code=code)
+
 #-----------------------------------------------------------
 # Join Family Page
 #-----------------------------------------------------------
@@ -178,18 +198,7 @@ def join_fam():
     return render_template("pages/join_fam.jinja")
 
 
-# def generate_random_code(length: int = 6) -> str:
-#     characters = string.ascii_letters + string.digits
-#     return "".join(random.choices(characters, k=length))
 
-
-# def main() -> None:
-#     code = generate_random_code(6)
-#     print(code)
-
-
-# if __name__ == "__main__":
-#     main()
 
 #-----------------------------------------------------------
 # Add Person Page

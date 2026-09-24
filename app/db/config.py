@@ -24,14 +24,15 @@ class UserTable:
             forename TEXT NOT NULL,
             surname TEXT NOT NULL, 
             username TEXT NOT NULL UNIQUE, 
-            password_hash TEXT NOT NULL
+            password_hash TEXT NOT NULL,
+            families TEXT
         )
     """
 
 
     SEED_DATA = """
-        INSERT INTO users (forename, surname, username, password_hash)
-        VALUES ("Test", "User", "test", "scrypt:32768:8:1$n7eJTucLbaGmUpAM$c1776374a8d456a6eaf61bccc08db5e1fcc4ff3b3983d364c45ab13074255eeae0a393afb11f99a9fe63fb1d980992ace17a72ba70324523b11e92e36cbe4252")
+        INSERT INTO users (forename, surname, username, password_hash, families)
+        VALUES ("Test", "User", "test", "scrypt:32768:8:1$n7eJTucLbaGmUpAM$c1776374a8d456a6eaf61bccc08db5e1fcc4ff3b3983d364c45ab13074255eeae0a393afb11f99a9fe63fb1d980992ace17a72ba70324523b11e92e36cbe4252", "Williams")
     """
 
 
@@ -119,7 +120,7 @@ class FamiliesTable:
     SCHEMA = """ 
         CREATE TABLE families (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            code TEXT,
+            code TEXT UNIQUE NOT NULL,
             surname TEXT NOT NULL
         )
     """
@@ -128,6 +129,28 @@ class FamiliesTable:
     SEED_DATA = """
          INSERT INTO families (code, surname)
         VALUES ("XTTYVB", "Williams")
+    """
+
+class MembersTable:
+
+    NAME = "members"
+
+    SCHEMA = """ 
+        CREATE TABLE members (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            family_id INTEGER NOT NULL,
+            user_id INTEGER NOT NULL,
+            role TEXT NOT NULL, 
+
+            FOREIGN KEY (family_id) REFERENCES families(id),
+            FOREIGN KEY (user_id) REFERENCES users(id)
+        )
+    """
+
+
+    SEED_DATA = """
+         INSERT INTO members (family_id, user_id, role)
+        VALUES (1, 1, "owner")
     """
 
 # Add more table classes here...
