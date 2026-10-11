@@ -176,20 +176,55 @@ def create_fam():
 #-----------------------------------------------------------
 # Join Code Page
 #-----------------------------------------------------------
-@app.get("/join_code")
-def join_code():
+@app.get("/join/new")
+def join_code_display():
     with connect_db() as db:
-        sql = """ 
+        sql = """
             SELECT families.code
             FROM families
-            JOIN family_members ON family_members.family_id = families.id
-            WHERE family_members.user_id = ?
+            JOIN members ON members.family_id = families.id
+            WHERE members.user_id = ?
         """
-        params = ()
+        params = (session["user"]["id"],)
         code = db.execute(sql, params).fetchone()
 
     return render_template("pages/join_code.jinja", code=code)
 
+#-----------------------------------------------------------
+# Join Family - process join code form
+#-----------------------------------------------------------
+@app.post("/join_fam")
+def join_code():
+    user_id = session["user"]["id"]
+    code = request.form.get("code", "").strip().upper()
+
+    with connect_db() as db:
+        family = db.execute(
+            "SELECT id FROM families WHERE code = ?", (code,)
+        ).fetchone()
+
+        if family:
+            family_id = family["id"]
+
+            existing = db.execute(
+                "SELECT id FROM members WHERE family_id = ? AND user_id = ?",
+                (family_id, user_id),
+            ).fetchone()
+
+            if existing:
+                flash("You're already in that family", "error")
+                return redirect("/join_fam")
+
+            db.execute(
+                "INSERT INTO members (family_id, user_id, role) VALUES (?, ?, ?)",
+                (family_id, user_id, "member"),
+            )
+            flash("You've joined the family!", "success")
+            return redirect("/")
+
+        else:
+            flash("No family found", "error")
+            return redirect("/homelog")
 #-----------------------------------------------------------
 # Join Family Page
 #-----------------------------------------------------------

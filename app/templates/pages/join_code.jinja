@@ -5,12 +5,19 @@
 {% endblock %}
 
 {% block content %}
-   
-  <h2>Join Code</h2>  
+ 
+    <h1>Join a Family</h1>
 
+    <form method="post" action="/join_fam">
     
+    <label>
+        Code
+        <input name="code" type="text" placeholder="join code" required>
+     </label>
 
+      
     <button>Back</button>
+    <button>Join</button>
     
     </form>
 {% endblock %}

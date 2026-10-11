@@ -179,6 +179,7 @@ TABLES = [
     StoryTable,
     UserTable,
     FamiliesTable,
+    MembersTable,
     # Add more tables here...
 ]
 
