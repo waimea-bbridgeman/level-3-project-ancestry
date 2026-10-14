@@ -1,0 +1,21 @@
+{#=====================================================
+  Pick page
+=====================================================#}
+
+{% extends 'pages/_base.jinja' %}
+
+
+{% block content %}
+
+    <h2>Pick which family</h2>
+
+    {% for family in families %}
+
+      <div class="family-pick">
+        <a href="/fam/{{ family.id }}"><h3>{{ family.surname }}</h3></a>
+      </div>
+
+    {% endfor %}
+
+{% endblock %}
+

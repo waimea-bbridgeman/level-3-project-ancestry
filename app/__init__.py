@@ -22,30 +22,15 @@ app = Flask(__name__)
 #===========================================================
 
 #-----------------------------------------------------------
-# Home page - Logged in
-#-----------------------------------------------------------
-@app.get("/homelog")
-def show_homelog():
-    with connect_db() as db:
-        sql = """
-            SELECT forename
-            FROM users
-        """
-        params = ()
-        users = db.execute(sql, params).fetchall()
-
-
-    return render_template("pages/homelog.jinja", users=users)
-
-
-#-----------------------------------------------------------
-# Home page - Not logged in 
+# Home page 
 #-----------------------------------------------------------
 @app.get("/")
 def show_home():
 
-    return render_template("pages/home.jinja") 
-
+    if session.get("logged_in"):
+        return redirect("/fam/pick")
+    else:
+        return redirect("/login") 
 
 
 #-----------------------------------------------------------
@@ -90,7 +75,7 @@ def login_user():
         }
 
         flash("Login successful", "success")
-        return redirect("/homelog")
+        return redirect("/")
 
 #-----------------------------------------------------------
 # Sign-up Page 
@@ -128,7 +113,54 @@ def process_new_user():
         db.execute(sql, params)
 
         flash("Account created. Please login", "success")
-        return redirect("/homelog")
+        return redirect("/")
+#-----------------------------------------------------------
+# Family Pick Page
+#-----------------------------------------------------------
+@app.get("/fam/pick")
+def select_family():
+    with connect_db() as db:
+        sql = """ 
+            SELECT 
+                *
+            FROM families
+        """
+        params = ()
+        families = db.execute(sql, params).fetchall()
+
+        return render_template("pages/family-pick.jinja", families=families)
+    
+    
+#-----------------------------------------------------------
+# Stories Page
+#-----------------------------------------------------------
+@app.get("/fam/<int:id>")
+def show_family_home(id):
+    with connect_db() as db:
+        sql = """ 
+            SELECT *
+            FROM families
+            WHERE id=?
+        """
+        params = (id,)
+        family = db.execute(sql, params).fetchone()
+
+        sql = """ 
+             SELECT 
+                stories.id, 
+                stories.title, 
+                stories.date,
+                stories.body
+
+            FROM stories
+            
+        """  ## NOTE NEED TO FILTER BY FAM ID
+
+        params = ()
+        stories = db.execute(sql, params).fetchall()
+
+        return render_template("pages/stories.jinja", family=family, stories=stories)
+    
 #-----------------------------------------------------------
 # Stories Page
 #-----------------------------------------------------------
@@ -172,7 +204,9 @@ def create_fam():
         db.execute(sql, params)
         flash(f"Family created! Your family code is {code}", "success")
 
-        return redirect("/homelog")
+        
+
+        return redirect("/")
 #-----------------------------------------------------------
 # Join Code Page
 #-----------------------------------------------------------
@@ -224,7 +258,7 @@ def join_code():
 
         else:
             flash("No family found", "error")
-            return redirect("/homelog")
+            return redirect("/")
 #-----------------------------------------------------------
 # Join Family Page
 #-----------------------------------------------------------
@@ -287,7 +321,14 @@ def post_story():
         db.execute(sql, params)
 
     flash(f"Story added")
-    return redirect("/homelog")
+    return redirect("/")
+
+#-----------------------------------------------------------
+# Family Management
+#-----------------------------------------------------------
+@app.get("/family")
+def manage_fam():
+    return render_template("pages/family.jinja")
 
 #-----------------------------------------------------------
 # Logout
