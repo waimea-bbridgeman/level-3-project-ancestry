@@ -34,7 +34,6 @@
         {% if session.logged_in %}
             Welcome, {{ session.user.forename }}!
             <a href="/">Home</a>
-            <a href="/stories">Stories</a>
             <a href="/fam/new">Create Family</a>
             <a href="/join/new">Join Family</a>
             <a href="/people/new">Add Person</a>
@@ -42,6 +41,9 @@
             <a href="/logout">Logout</a>
                 {# {% if session.user.id == session.family.owner %} #}
             <a href="/family">Admin</a>
+                {# {% endif %} #}
+                {#  {% if picked fam %} #}
+            <a href="/stories">Stories</a>
                 {# {% endif %} #}
         {% else %}
             <a href="/">Home</a>

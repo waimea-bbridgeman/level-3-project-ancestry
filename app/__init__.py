@@ -153,8 +153,10 @@ def show_family_home(id):
                 stories.body
 
             FROM stories
+            JOIN members ON members.user_id = stories.user_id
+            WHERE members.family_id = ?
             
-        """  ## NOTE NEED TO FILTER BY FAM ID
+        """  
 
         params = ()
         stories = db.execute(sql, params).fetchall()
@@ -185,7 +187,7 @@ def show_all_stories():
 #-----------------------------------------------------------
 @app.get("/fam/new")
 def show_create_fam():
-    return render_template("pages/create_fam.jinja")
+    return render_template("pages/create-fam.jinja")
 #-----------------------------------------------------------
 # Create Family 
 #-----------------------------------------------------------
@@ -194,7 +196,7 @@ def create_fam():
     surname  = request.form.get('surname',  '').strip()
    
     code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
-
+    
     with connect_db() as db:
         sql = """
             INSERT INTO families (surname, code)
@@ -202,11 +204,25 @@ def create_fam():
         """
         params = (surname, code)
         db.execute(sql, params)
+
+        sql = """
+                SELECT id
+                FROM families
+                WHERE code = ?
+        """
+        params = (code,)
+        family = db.execute(sql, params).fetchone()
+
+        sql = """
+            INSERT INTO members (family_id, user_id, role)
+            VALUES (?, ?, ?)
+        """
+        params = (family["id"], session["user"]["id"], "owner")
+        db.execute(sql, params)
+
         flash(f"Family created! Your family code is {code}", "success")
-
         
-
-        return redirect("/")
+    return redirect("/")
 #-----------------------------------------------------------
 # Join Code Page
 #-----------------------------------------------------------
@@ -222,12 +238,12 @@ def join_code_display():
         params = (session["user"]["id"],)
         code = db.execute(sql, params).fetchone()
 
-    return render_template("pages/join_code.jinja", code=code)
+    return render_template("pages/join-code.jinja", code=code)
 
 #-----------------------------------------------------------
 # Join Family - process join code form
 #-----------------------------------------------------------
-@app.post("/join_fam")
+@app.post("/join-fam")
 def join_code():
     user_id = session["user"]["id"]
     code = request.form.get("code", "").strip().upper()
@@ -247,7 +263,7 @@ def join_code():
 
             if existing:
                 flash("You're already in that family", "error")
-                return redirect("/join_fam")
+                return redirect("/join-fam")
 
             db.execute(
                 "INSERT INTO members (family_id, user_id, role) VALUES (?, ?, ?)",
@@ -262,11 +278,9 @@ def join_code():
 #-----------------------------------------------------------
 # Join Family Page
 #-----------------------------------------------------------
-@app.get("/join_fam")
+@app.get("/join-fam")
 def join_fam():
-    return render_template("pages/join_fam.jinja")
-
-
+    return render_template("pages/join-fam.jinja")
 
 
 #-----------------------------------------------------------
@@ -274,14 +288,14 @@ def join_fam():
 #-----------------------------------------------------------
 @app.get("/people/new")
 def add_person():
-    return render_template("pages/add_person.jinja")
+    return render_template("pages/add-person.jinja")
 
 #-----------------------------------------------------------
 # Show Story Form
 #-----------------------------------------------------------
 @app.get("/story")
 def show_story_form():
-    return render_template("pages/story_form.jinja")
+    return render_template("pages/story-form.jinja")
 
 #-----------------------------------------------------------
 # Post Story
@@ -326,9 +340,9 @@ def post_story():
 #-----------------------------------------------------------
 # Family Management
 #-----------------------------------------------------------
-@app.get("/family")
+@app.get("/family-admin")
 def manage_fam():
-    return render_template("pages/family.jinja")
+    return render_template("pages/family-admin.jinja")
 
 #-----------------------------------------------------------
 # Logout
