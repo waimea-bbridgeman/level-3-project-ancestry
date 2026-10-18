@@ -120,17 +120,16 @@ def process_new_user():
 @app.get("/fam/pick")
 def select_family():
     with connect_db() as db:
-        sql = """ 
-            SELECT 
-                *
-            FROM families
+        sql = """
+            SELECT families.id, families.surname, members.role
+            FROM members
+            JOIN families ON families.id = members.family_id
+            WHERE members.user_id = ?
         """
-        params = ()
+        params = (session["user"]["id"],)
         families = db.execute(sql, params).fetchall()
 
         return render_template("pages/family-pick.jinja", families=families)
-    
-    
 #-----------------------------------------------------------
 # Stories Page
 #-----------------------------------------------------------
@@ -158,7 +157,7 @@ def show_family_home(id):
             
         """  
 
-        params = ()
+        params = (id,)
         stories = db.execute(sql, params).fetchall()
 
         return render_template("pages/stories.jinja", family=family, stories=stories)
@@ -238,7 +237,7 @@ def join_code_display():
         params = (session["user"]["id"],)
         code = db.execute(sql, params).fetchone()
 
-    return render_template("pages/join-code.jinja", code=code)
+    return render_template("pages/join-fam.jinja", code=code)
 
 #-----------------------------------------------------------
 # Join Family - process join code form
