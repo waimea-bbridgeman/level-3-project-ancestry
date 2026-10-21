@@ -136,32 +136,34 @@ def select_family():
 @app.get("/fam/<int:id>")
 def show_family_home(id):
     with connect_db() as db:
-        sql = """ 
-            SELECT *
+        sql = """
+            SELECT families.id, families.surname, members.role
             FROM families
-            WHERE id=?
+            JOIN members ON members.family_id = families.id
+            WHERE families.id = ? AND members.user_id = ?
         """
-        params = (id,)
+        params = (id, session["user"]["id"])
         family = db.execute(sql, params).fetchone()
 
-        sql = """ 
-             SELECT 
-                stories.id, 
-                stories.title, 
-                stories.date,
-                stories.body
+        if not family:
+            flash("You're not in that family", "error")
+            return redirect("/")
 
+        session["family"] = {
+            "id":      family["id"],
+            "surname": family["surname"],
+            "role":    family["role"]
+        }
+
+        sql = """
+            SELECT id, title, date, body
             FROM stories
-            JOIN members ON members.user_id = stories.user_id
-            WHERE members.family_id = ?
-            
-        """  
-
+            WHERE family_id = ?
+        """
         params = (id,)
         stories = db.execute(sql, params).fetchall()
 
         return render_template("pages/stories.jinja", family=family, stories=stories)
-    
 #-----------------------------------------------------------
 # Stories Page
 #-----------------------------------------------------------
@@ -173,9 +175,11 @@ def show_all_stories():
                 stories.id, 
                 stories.title, 
                 stories.date,
-                stories.body
+                stories.body,
+                families.surname
 
-            FROM stories
+            FROM stories 
+            JOIN families ON families.id = stories.family_id    
         """
         params = ()
         stories = db.execute(sql, params).fetchall()
@@ -281,7 +285,6 @@ def join_code():
 def join_fam():
     return render_template("pages/join-fam.jinja")
 
-
 #-----------------------------------------------------------
 # Add Person Page
 #-----------------------------------------------------------
@@ -323,14 +326,15 @@ def post_story():
     date = html.escape(date)
 
     user_id = session["user"]["id"]
+    family_id = session["family"]["id"]
 
     # Add to database
     with connect_db() as db:
         sql = """
-            INSERT INTO stories (title, body, date, user_id)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO stories (title, body, date, user_id, family_id)
+            VALUES (?, ?, ?, ?, ?)
         """
-        params = (title, body, date, user_id)
+        params = (title, body, date, user_id, family_id)
         db.execute(sql, params)
 
     flash(f"Story added")

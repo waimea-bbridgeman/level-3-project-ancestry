@@ -40,35 +40,43 @@ class PeopleTable:
 
     NAME = "people"
 
-    SCHEMA = """ 
+    SCHEMA = """
         CREATE TABLE people (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             forename TEXT NOT NULL,
-            surname TEXT NOT NULL, 
-            notes TEXT, 
-            dob TEXT
+            surname TEXT NOT NULL,
+            notes TEXT,
+            dob TEXT,
+            family_id INTEGER NOT NULL,
+
+            FOREIGN KEY(family_id) REFERENCES families(id)
         )
     """
 
-
     SEED_DATA = """
-        INSERT INTO people (forename, surname)
-        VALUES ("Johnny", "Pigman")
+        INSERT INTO people (forename, surname, family_id)
+        VALUES ('Johnny', 'Pigman', 1)
     """
+
+
 class InvolvesTable:
 
     NAME = "involves"
 
-    SCHEMA = """ 
+    SCHEMA = """
         CREATE TABLE involves (
-            story_id,
-            person_id
+            story_id INTEGER NOT NULL,
+            person_id INTEGER NOT NULL,
+
+            PRIMARY KEY (story_id, person_id),
+            FOREIGN KEY(story_id) REFERENCES stories(id),
+            FOREIGN KEY(person_id) REFERENCES people(id)
         )
     """
 
-
     SEED_DATA = """
-        
+        INSERT INTO involves (story_id, person_id)
+        VALUES (1, 1)
     """
 
 
@@ -102,15 +110,17 @@ class StoryTable:
             date    TEXT,
 
             user_id INTEGER NOT NULL,
+            family_id INTEGER NOT NULL,
             
-            FOREIGN KEY(user_id) REFERENCES users(id)
+            FOREIGN KEY(user_id) REFERENCES users(id),
+            FOREIGN KEY(family_id) REFERENCES families(id)
         )
     """
 
     SEED_DATA = """
-        INSERT INTO stories (user_id, title, body, date)
+        INSERT INTO stories (user_id, family_id, title, body, date)
         VALUES
-            ("1", "Treacherous Journey", "The journey was treacherous.", "2025-12-12")
+            ("1", "1", "Treacherous Journey", "The journey was treacherous.", "2025-12-12")
     """
 
 class FamiliesTable:
@@ -173,13 +183,13 @@ class MembersTable:
 #----------------------------------------------------------------------------
 
 TABLES = [
-    PeopleTable, 
-    InvolvesTable,
-    ImagesTable,
-    StoryTable,
     UserTable,
     FamiliesTable,
     MembersTable,
+    PeopleTable, 
+    StoryTable,
+    InvolvesTable,
+    ImagesTable,
+   
     # Add more tables here...
 ]
-
