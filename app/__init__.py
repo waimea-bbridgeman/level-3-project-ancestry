@@ -345,7 +345,19 @@ def post_story():
 #-----------------------------------------------------------
 @app.get("/family-admin")
 def manage_fam():
-    return render_template("pages/family-admin.jinja")
+  
+    family_id = session["family"]["id"]
+
+    with connect_db() as db:
+        sql = """
+            SELECT id, surname, code
+            FROM families
+            WHERE id = ?
+        """
+        params = (family_id,)
+        family = db.execute(sql, params).fetchone()
+
+        return render_template("pages/family-admin.jinja", family=family)
 
 #-----------------------------------------------------------
 # Logout
