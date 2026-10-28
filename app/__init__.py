@@ -1,10 +1,19 @@
-#===========================================================
+# ===========================================================
 # Ancestry Tracker
 # By Billy Bridgeman
-#===========================================================
+# ===========================================================
 import random
 import string
-from flask import Flask, request, session, render_template, flash, redirect, send_file, make_response
+from flask import (
+    Flask,
+    request,
+    session,
+    render_template,
+    flash,
+    redirect,
+    send_file,
+    make_response,
+)
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 from os import getenv
@@ -12,42 +21,44 @@ from io import BytesIO
 import html
 from app.helpers import *
 
-
 # Create the app
 app = Flask(__name__)
 
 
-#===========================================================
+# ===========================================================
 # App Routes Handlers
-#===========================================================
+# ===========================================================
 
-#-----------------------------------------------------------
-# Home page 
-#-----------------------------------------------------------
+
+# -----------------------------------------------------------
+# Home page
+# -----------------------------------------------------------
 @app.get("/")
 def show_home():
 
     if session.get("logged_in"):
         return redirect("/fam/pick")
     else:
-        return redirect("/login") 
+        return redirect("/login")
 
 
-#-----------------------------------------------------------
+# -----------------------------------------------------------
 # Login Page
-#-----------------------------------------------------------
+# -----------------------------------------------------------
+
 
 @app.get("/login")
 def show_login_form():
     return render_template("pages/login.jinja")
 
-#-----------------------------------------------------------
-# Login User 
-#-----------------------------------------------------------
+
+# -----------------------------------------------------------
+# Login User
+# -----------------------------------------------------------
 @app.post("/login")
 def login_user():
-    username = request.form.get('username', '').strip().lower()
-    password = request.form.get('password', '').strip()
+    username = request.form.get("username", "").strip().lower()
+    password = request.form.get("password", "").strip()
 
     with connect_db() as db:
         sql = """
@@ -70,29 +81,31 @@ def login_user():
         session["user"] = {
             "username": username,
             "forename": user["forename"],
-            "surname":  user["surname"],
-            "id":       user["id"]
+            "surname": user["surname"],
+            "id": user["id"],
         }
 
         flash("Login successful", "success")
         return redirect("/")
 
-#-----------------------------------------------------------
-# Sign-up Page 
-#-----------------------------------------------------------
+
+# -----------------------------------------------------------
+# Sign-up Page
+# -----------------------------------------------------------
 @app.get("/user/new")
 def show_signup_form():
     return render_template("pages/sign-up.jinja")
 
-#-----------------------------------------------------------
-# Sign-up User 
-#-----------------------------------------------------------
+
+# -----------------------------------------------------------
+# Sign-up User
+# -----------------------------------------------------------
 @app.post("/user")
 def process_new_user():
-    forename = request.form.get('forename', '').strip()
-    surname  = request.form.get('surname',  '').strip()
-    username = request.form.get('username', '').strip().lower()
-    password = request.form.get('password', '').strip()
+    forename = request.form.get("forename", "").strip()
+    surname = request.form.get("surname", "").strip()
+    username = request.form.get("username", "").strip().lower()
+    password = request.form.get("password", "").strip()
 
     with connect_db() as db:
         sql = "SELECT id FROM users WHERE username=?"
@@ -114,9 +127,11 @@ def process_new_user():
 
         flash("Account created. Please login", "success")
         return redirect("/")
-#-----------------------------------------------------------
+
+
+# -----------------------------------------------------------
 # Family Pick Page
-#-----------------------------------------------------------
+# -----------------------------------------------------------
 @app.get("/fam/pick")
 def select_family():
     with connect_db() as db:
@@ -130,9 +145,11 @@ def select_family():
         families = db.execute(sql, params).fetchall()
 
         return render_template("pages/family-pick.jinja", families=families)
-#-----------------------------------------------------------
+
+
+# -----------------------------------------------------------
 # Stories Page
-#-----------------------------------------------------------
+# -----------------------------------------------------------
 @app.get("/fam/<int:id>")
 def show_family_home(id):
     with connect_db() as db:
@@ -150,9 +167,9 @@ def show_family_home(id):
             return redirect("/")
 
         session["family"] = {
-            "id":      family["id"],
+            "id": family["id"],
             "surname": family["surname"],
-            "role":    family["role"]
+            "role": family["role"],
         }
 
         sql = """
@@ -164,9 +181,11 @@ def show_family_home(id):
         stories = db.execute(sql, params).fetchall()
 
         return render_template("pages/stories.jinja", family=family, stories=stories)
-#-----------------------------------------------------------
+
+
+# -----------------------------------------------------------
 # Stories Page
-#-----------------------------------------------------------
+# -----------------------------------------------------------
 @app.get("/stories")
 def show_all_stories():
     with connect_db() as db:
@@ -185,21 +204,25 @@ def show_all_stories():
         stories = db.execute(sql, params).fetchall()
 
         return render_template("pages/stories.jinja", stories=stories)
-#-----------------------------------------------------------
+
+
+# -----------------------------------------------------------
 # Create Family Page
-#-----------------------------------------------------------
+# -----------------------------------------------------------
 @app.get("/fam/new")
 def show_create_fam():
     return render_template("pages/create-fam.jinja")
-#-----------------------------------------------------------
-# Create Family 
-#-----------------------------------------------------------
+
+
+# -----------------------------------------------------------
+# Create Family
+# -----------------------------------------------------------
 @app.post("/fam/new")
 def create_fam():
-    surname  = request.form.get('surname',  '').strip()
-   
-    code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
-    
+    surname = request.form.get("surname", "").strip()
+
+    code = "".join(random.choices(string.ascii_uppercase + string.digits, k=6))
+
     with connect_db() as db:
         sql = """
             INSERT INTO families (surname, code)
@@ -224,11 +247,13 @@ def create_fam():
         db.execute(sql, params)
 
         flash(f"Family created! Your family code is {code}", "success")
-        
+
     return redirect("/")
-#-----------------------------------------------------------
+
+
+# -----------------------------------------------------------
 # Join Code Page
-#-----------------------------------------------------------
+# -----------------------------------------------------------
 @app.get("/join/new")
 def join_code_display():
     with connect_db() as db:
@@ -243,9 +268,10 @@ def join_code_display():
 
     return render_template("pages/join-fam.jinja", code=code)
 
-#-----------------------------------------------------------
+
+# -----------------------------------------------------------
 # Join Family - process join code form
-#-----------------------------------------------------------
+# -----------------------------------------------------------
 @app.post("/join-fam")
 def join_code():
     user_id = session["user"]["id"]
@@ -278,38 +304,42 @@ def join_code():
         else:
             flash("No family found", "error")
             return redirect("/")
-#-----------------------------------------------------------
+
+
+# -----------------------------------------------------------
 # Join Family Page
-#-----------------------------------------------------------
+# -----------------------------------------------------------
 @app.get("/join-fam")
 def join_fam():
     return render_template("pages/join-fam.jinja")
 
-#-----------------------------------------------------------
+
+# -----------------------------------------------------------
 # Add Person Page
-#-----------------------------------------------------------
+# -----------------------------------------------------------
 @app.get("/people/new")
 def add_person():
     return render_template("pages/add-person.jinja")
 
-#-----------------------------------------------------------
+
+# -----------------------------------------------------------
 # Show Story Form
-#-----------------------------------------------------------
+# -----------------------------------------------------------
 @app.get("/story")
 def show_story_form():
     return render_template("pages/story-form.jinja")
 
-#-----------------------------------------------------------
+
+# -----------------------------------------------------------
 # Post Story
-#-----------------------------------------------------------
+# -----------------------------------------------------------
 @app.post("/story/new")
 def post_story():
 
     # Get form data
-    title = request.form.get('title', '').strip()
-    body = request.form.get('body', '').strip()
-    date = request.form.get('date', '').strip()
-    
+    title = request.form.get("title", "").strip()
+    body = request.form.get("body", "").strip()
+    date = request.form.get("date", "").strip()
 
     # Validate data
     if not title:
@@ -340,13 +370,15 @@ def post_story():
     flash(f"Story added")
     return redirect("/")
 
-#-----------------------------------------------------------
+
+# -----------------------------------------------------------
 # Family Management
-#-----------------------------------------------------------
+# -----------------------------------------------------------
 @app.get("/family-admin")
 def manage_fam():
-  
+
     family_id = session["family"]["id"]
+    role = session["family"]["role"]
 
     with connect_db() as db:
         sql = """
@@ -354,22 +386,25 @@ def manage_fam():
             FROM families
             WHERE id = ?
         """
-        params = (family_id,)
+        params = (family_id, role)
         family = db.execute(sql, params).fetchone()
 
         return render_template("pages/family-admin.jinja", family=family)
 
-#-----------------------------------------------------------
+
+# -----------------------------------------------------------
 # Logout
-#-----------------------------------------------------------
+# -----------------------------------------------------------
 @app.get("/logout")
 def logout_user():
     session.clear()
     flash(f"You have been logged out", "success")
     return redirect("/")
-#===========================================================
+
+
+# ===========================================================
 # Configure the app
-#===========================================================
+# ===========================================================
 load_dotenv()
 app.config.from_prefixed_env()
 init_logging(app)
@@ -378,4 +413,3 @@ init_date_filters(app)
 init_error_handlers(app)
 init_database()
 register_commands(app)
-
