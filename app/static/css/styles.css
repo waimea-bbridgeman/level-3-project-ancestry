@@ -6,7 +6,7 @@
 :root {
 
     --base-col:          #12284a;
-    --accent-col:        #e2b04a;
+    --accent-col:        #ffae54;
     --paper-col:         #f5edd9;
 
     --base-col-light:    color-mix(in srgb, var(--base-col), #fff 20%);

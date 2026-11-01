@@ -24,7 +24,7 @@ import os
 import uuid
 from werkzeug.utils import secure_filename
 
-IMAGES_FOLDER = os.path.join('app', 'static', 'images')
+IMAGES_FOLDER = os.path.join("app", "static", "images")
 
 # Create the app
 app = Flask(__name__)
@@ -40,7 +40,7 @@ app = Flask(__name__)
 # -----------------------------------------------------------
 @app.get("/")
 def show_home():
-
+    # If user is logged in show their families
     if session.get("logged_in"):
         return redirect("/fam/pick")
     else:
@@ -50,8 +50,6 @@ def show_home():
 # -----------------------------------------------------------
 # Login Page
 # -----------------------------------------------------------
-
-
 @app.get("/login")
 def show_login_form():
     return render_template("pages/login.jinja")
@@ -74,10 +72,12 @@ def login_user():
         params = (username,)
         user = db.execute(sql, params).fetchone()
 
+        # Check for user 
         if not user:
             flash(f"Unknown user", "error")
             return redirect("/login")
 
+        # Check password hash 
         if not check_password_hash(user["password_hash"], password):
             flash(f"Incorrect password", "error")
             return redirect("/login")
@@ -167,6 +167,7 @@ def show_family_home(id):
         params = (id, session["user"]["id"])
         family = db.execute(sql, params).fetchone()
 
+        # Are they  already in the family?
         if not family:
             flash(f"You're not in that family", "error")
             return redirect("/")
@@ -186,9 +187,7 @@ def show_family_home(id):
         stories = db.execute(sql, params).fetchall()
 
         return render_template("pages/stories.jinja", family=family, stories=stories, title="My Stories")
-# -----------------------------------------------------------
-# Stories Page
-# -----------------------------------------------------------
+
 # -----------------------------------------------------------
 # All Stories Page
 # -----------------------------------------------------------
@@ -209,14 +208,12 @@ def show_all_stories():
 
         return render_template("pages/stories.jinja", stories=stories, title="All Stories")
 
-
 # -----------------------------------------------------------
 # Create Family Page
 # -----------------------------------------------------------
 @app.get("/fam/new")
 def show_create_fam():
     return render_template("pages/create-fam.jinja")
-
 
 # -----------------------------------------------------------
 # Create Family
@@ -225,8 +222,10 @@ def show_create_fam():
 def create_fam():
     surname = request.form.get("surname", "").strip()
 
+    # Create a 6 didget code for the family 
     code = "".join(random.choices(string.ascii_uppercase + string.digits, k=6))
 
+    # add the code and family name to db 
     with connect_db() as db:
         sql = """
             INSERT INTO families (surname, code)
@@ -254,7 +253,6 @@ def create_fam():
 
     return redirect("/")
 
-
 # -----------------------------------------------------------
 # Join Code Page
 # -----------------------------------------------------------
@@ -272,9 +270,8 @@ def join_code_display():
 
     return render_template("pages/join-fam.jinja", code=code)
 
-
 # -----------------------------------------------------------
-# Process join form 
+# Process join form
 # -----------------------------------------------------------
 @app.post("/join-fam")
 def join_code():
@@ -283,7 +280,7 @@ def join_code():
     code = request.form.get("code", "").strip().upper()
     user_id = session["user"]["id"]
 
-    # Check if valid 
+    # Check if valid
     if not code:
         flash(f"Family code is required", "error")
         return redirect("/join-fam")
@@ -323,13 +320,13 @@ def join_code():
 
         flash("You've joined the family!", "success")
         return redirect("/")
+
 # -----------------------------------------------------------
 # Join Family Page
 # -----------------------------------------------------------
 @app.get("/join-fam")
 def join_fam():
     return render_template("pages/join-fam.jinja")
-
 
 # -----------------------------------------------------------
 # Add Person Page
@@ -338,15 +335,17 @@ def join_fam():
 def add_person():
     return render_template("pages/add-person.jinja")
 
-#-----------------------------------------------------------
+# -----------------------------------------------------------
 # All People Page
-#-----------------------------------------------------------
+# -----------------------------------------------------------
 @app.get("/people")
 def show_people():
+    # Check if the session has a family selected 
     if not session.get("family"):
         flash(f"Pick or create a family first", "error")
         return redirect("/")
 
+    # Get info about a person 
     with connect_db() as db:
         sql = """
             SELECT id, forename, surname, image
@@ -364,8 +363,7 @@ def show_people():
 # -----------------------------------------------------------
 @app.get("/story")
 def show_story_form():
-    return render_template("pages/story-form.jinja")
-
+    return render_template("pages/add-story.jinja")
 
 # -----------------------------------------------------------
 # Post Story
@@ -409,10 +407,11 @@ def post_story():
 
 
 # -----------------------------------------------------------
-# Family Management 
+# Family Management
 # -----------------------------------------------------------
 @app.get("/family-admin")
 def manage_fam():
+    # Check there is a family in the session 
     if not session.get("family"):
         flash(f"Pick or create a family first", "error")
         return redirect("/")
@@ -437,7 +436,9 @@ def manage_fam():
         params = (family_id,)
         members = db.execute(sql, params).fetchall()
 
-        return render_template("pages/family-admin.jinja", family=family, members=members)
+        return render_template(
+            "pages/family-admin.jinja", family=family, members=members
+        )
 
 
 # -----------------------------------------------------------
@@ -445,14 +446,17 @@ def manage_fam():
 # -----------------------------------------------------------
 @app.get("/member/<int:user_id>/delete")
 def delete_member(user_id):
+    # Only allow the owner to remove members from the family
     if not session.get("family") or session["family"]["role"] != "owner":
         flash(f"Only the family owner can remove members", "error")
         return redirect("/")
 
+    # Make sure the owner can't remove himself 
     if user_id == session["user"]["id"]:
         flash(f"You can't remove yourself", "error")
         return redirect("/family-admin")
 
+    # delete the memeber from the family 
     with connect_db() as db:
         sql = """
             DELETE FROM members
@@ -491,11 +495,14 @@ def leave_family():
     session.pop("family", None)
     flash(f"You have left the family", "success")
     return redirect("/")
+
+
 # -----------------------------------------------------------
 # Logout
 # -----------------------------------------------------------
 @app.get("/logout")
 def logout_user():
+    # Clear the session 
     session.clear()
     flash(f"You have been logged out", "success")
     return redirect("/")
