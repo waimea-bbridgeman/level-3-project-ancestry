@@ -20,6 +20,11 @@ from os import getenv
 from io import BytesIO
 import html
 from app.helpers import *
+import os
+import uuid
+from werkzeug.utils import secure_filename
+
+IMAGES_FOLDER = os.path.join('app', 'static', 'images')
 
 # Create the app
 app = Flask(__name__)
@@ -163,7 +168,7 @@ def show_family_home(id):
         family = db.execute(sql, params).fetchone()
 
         if not family:
-            flash("You're not in that family", "error")
+            flash(f"You're not in that family", "error")
             return redirect("/")
 
         session["family"] = {
@@ -175,35 +180,34 @@ def show_family_home(id):
         sql = """
             SELECT id, title, date, body
             FROM stories
-            WHERE family_id = ?
+            WHERE family_id = ? AND user_id = ?
         """
-        params = (id,)
+        params = (id, session["user"]["id"])
         stories = db.execute(sql, params).fetchall()
 
-        return render_template("pages/stories.jinja", family=family, stories=stories)
-
-
+        return render_template("pages/stories.jinja", family=family, stories=stories, title="My Stories")
 # -----------------------------------------------------------
 # Stories Page
 # -----------------------------------------------------------
+# -----------------------------------------------------------
+# All Stories Page
+# -----------------------------------------------------------
 @app.get("/stories")
 def show_all_stories():
-    with connect_db() as db:
-        sql = """ 
-            SELECT 
-                stories.id, 
-                stories.title, 
-                stories.date,
-                stories.body,
-                families.surname
+    if not session.get("family"):
+        flash(f"Pick or create a family first", "error")
+        return redirect("/")
 
-            FROM stories 
-            JOIN families ON families.id = stories.family_id    
+    with connect_db() as db:
+        sql = """
+            SELECT id, title, date, body
+            FROM stories
+            WHERE family_id = ?
         """
-        params = ()
+        params = (session["family"]["id"],)
         stories = db.execute(sql, params).fetchall()
 
-        return render_template("pages/stories.jinja", stories=stories)
+        return render_template("pages/stories.jinja", stories=stories, title="All Stories")
 
 
 # -----------------------------------------------------------
@@ -270,42 +274,55 @@ def join_code_display():
 
 
 # -----------------------------------------------------------
-# Join Family - process join code form
+# Process join form 
 # -----------------------------------------------------------
 @app.post("/join-fam")
 def join_code():
-    user_id = session["user"]["id"]
+
+    # Get form data
     code = request.form.get("code", "").strip().upper()
+    user_id = session["user"]["id"]
+
+    # Check if valid 
+    if not code:
+        flash(f"Family code is required", "error")
+        return redirect("/join-fam")
+
+    if len(code) != 6:
+        flash(f"Family code must be 6 characters", "error")
+        return redirect("/join-fam")
 
     with connect_db() as db:
-        family = db.execute(
-            "SELECT id FROM families WHERE code = ?", (code,)
-        ).fetchone()
+        # Find the family with this code
+        sql = "SELECT id FROM families WHERE code=?"
+        params = (code,)
+        family = db.execute(sql, params).fetchone()
 
-        if family:
-            family_id = family["id"]
+        if not family:
+            flash(f"No family found", "error")
+            return redirect("/join-fam")
 
-            existing = db.execute(
-                "SELECT id FROM members WHERE family_id = ? AND user_id = ?",
-                (family_id, user_id),
-            ).fetchone()
+        family_id = family["id"]
 
-            if existing:
-                flash("You're already in that family", "error")
-                return redirect("/join-fam")
+        # Check they are not already a member
+        sql = "SELECT id FROM members WHERE family_id=? AND user_id=?"
+        params = (family_id, user_id)
+        member = db.execute(sql, params).fetchone()
 
-            db.execute(
-                "INSERT INTO members (family_id, user_id, role) VALUES (?, ?, ?)",
-                (family_id, user_id, "member"),
-            )
-            flash("You've joined the family!", "success")
-            return redirect("/")
+        if member:
+            flash(f"You're already in that family", "error")
+            return redirect("/join-fam")
 
-        else:
-            flash("No family found", "error")
-            return redirect("/")
+        # Add them to the family
+        sql = """
+            INSERT INTO members (family_id, user_id, role)
+            VALUES (?, ?, ?)
+        """
+        params = (family_id, user_id, "member")
+        db.execute(sql, params)
 
-
+        flash("You've joined the family!", "success")
+        return redirect("/")
 # -----------------------------------------------------------
 # Join Family Page
 # -----------------------------------------------------------
@@ -321,6 +338,26 @@ def join_fam():
 def add_person():
     return render_template("pages/add-person.jinja")
 
+#-----------------------------------------------------------
+# All People Page
+#-----------------------------------------------------------
+@app.get("/people")
+def show_people():
+    if not session.get("family"):
+        flash(f"Pick or create a family first", "error")
+        return redirect("/")
+
+    with connect_db() as db:
+        sql = """
+            SELECT id, forename, surname, image
+            FROM people
+            WHERE family_id = ?
+            ORDER BY forename
+        """
+        params = (session["family"]["id"],)
+        people = db.execute(sql, params).fetchall()
+
+        return render_template("pages/all-people.jinja", people=people)
 
 # -----------------------------------------------------------
 # Show Story Form
@@ -367,18 +404,20 @@ def post_story():
         params = (title, body, date, user_id, family_id)
         db.execute(sql, params)
 
-    flash(f"Story added")
-    return redirect("/")
+    flash("Story added")
+    return redirect(f"/fam/{family_id}")
 
 
 # -----------------------------------------------------------
-# Family Management
+# Family Management 
 # -----------------------------------------------------------
 @app.get("/family-admin")
 def manage_fam():
+    if not session.get("family"):
+        flash(f"Pick or create a family first", "error")
+        return redirect("/")
 
     family_id = session["family"]["id"]
-    role = session["family"]["role"]
 
     with connect_db() as db:
         sql = """
@@ -386,12 +425,72 @@ def manage_fam():
             FROM families
             WHERE id = ?
         """
-        params = (family_id, role)
+        params = (family_id,)
         family = db.execute(sql, params).fetchone()
 
-        return render_template("pages/family-admin.jinja", family=family)
+        sql = """
+            SELECT users.id AS user_id, users.forename, users.surname, members.role
+            FROM members
+            JOIN users ON users.id = members.user_id
+            WHERE members.family_id = ?
+        """
+        params = (family_id,)
+        members = db.execute(sql, params).fetchall()
+
+        return render_template("pages/family-admin.jinja", family=family, members=members)
 
 
+# -----------------------------------------------------------
+# Remove member (owner use)
+# -----------------------------------------------------------
+@app.get("/member/<int:user_id>/delete")
+def delete_member(user_id):
+    if not session.get("family") or session["family"]["role"] != "owner":
+        flash(f"Only the family owner can remove members", "error")
+        return redirect("/")
+
+    if user_id == session["user"]["id"]:
+        flash(f"You can't remove yourself", "error")
+        return redirect("/family-admin")
+
+    with connect_db() as db:
+        sql = """
+            DELETE FROM members
+            WHERE family_id = ? AND user_id = ?
+        """
+        params = (session["family"]["id"], user_id)
+        db.execute(sql, params)
+
+        flash(f"Member removed", "success")
+        return redirect("/family-admin")
+
+
+# -----------------------------------------------------------
+# Leave a Family (member use)
+# -----------------------------------------------------------
+@app.get("/family/leave")
+def leave_family():
+    if not session.get("family"):
+        flash(f"Pick or create a family first", "error")
+        return redirect("/")
+
+    # Can't leave a family ownerless
+    if session["family"]["role"] == "owner":
+        flash(f"The owner can't leave the family", "error")
+        return redirect("/family-admin")
+
+    with connect_db() as db:
+        sql = """
+            DELETE FROM members
+            WHERE family_id = ? AND user_id = ?
+        """
+        params = (session["family"]["id"], session["user"]["id"])
+        db.execute(sql, params)
+
+    # Remove the family from the session data
+    session.pop("family", None)
+    flash(f"You have left the family", "success")
+    return redirect("/")
 # -----------------------------------------------------------
 # Logout
 # -----------------------------------------------------------

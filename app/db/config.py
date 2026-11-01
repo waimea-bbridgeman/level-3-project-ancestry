@@ -25,14 +25,13 @@ class UserTable:
             surname TEXT NOT NULL, 
             username TEXT NOT NULL UNIQUE, 
             password_hash TEXT NOT NULL,
-            families TEXT
         )
     """
 
 
     SEED_DATA = """
-        INSERT INTO users (forename, surname, username, password_hash, families)
-        VALUES ("Test", "User", "test", "scrypt:32768:8:1$n7eJTucLbaGmUpAM$c1776374a8d456a6eaf61bccc08db5e1fcc4ff3b3983d364c45ab13074255eeae0a393afb11f99a9fe63fb1d980992ace17a72ba70324523b11e92e36cbe4252", "Williams")
+        INSERT INTO users (forename, surname, username, password_hash)
+        VALUES ("Test", "User", "test", "scrypt:32768:8:1$n7eJTucLbaGmUpAM$c1776374a8d456a6eaf61bccc08db5e1fcc4ff3b3983d364c45ab13074255eeae0a393afb11f99a9fe63fb1d980992ace17a72ba70324523b11e92e36cbe4252")
     """
 
 
@@ -47,6 +46,8 @@ class PeopleTable:
             surname TEXT NOT NULL,
             notes TEXT,
             dob TEXT,
+            image TEXT,
+            links TEXT,
             family_id INTEGER NOT NULL,
 
             FOREIGN KEY(family_id) REFERENCES families(id)
@@ -77,25 +78,6 @@ class InvolvesTable:
     SEED_DATA = """
         INSERT INTO involves (story_id, person_id)
         VALUES (1, 1)
-    """
-
-
-class ImagesTable:
-
-    NAME = "images"
-
-    SCHEMA = """ 
-        CREATE TABLE images (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            filename TEXT NOT NULL,
-            story_id INTEGER
-        )
-    """
-
-
-    SEED_DATA = """
-         INSERT INTO images (filename, story_id)
-        VALUES ("docs/evidence/screenshots/V1.png", "1")
     """
 
 class StoryTable:
@@ -163,25 +145,6 @@ class MembersTable:
         VALUES (1, 1, "owner")
     """
 
-# Add more table classes here...
-
-
-
-#----------------------------------------------------------------------------
-# Table registry
-#----------------------------------------------------------------------------
-# Register all of your tables by adding them to the TABLES list here:
-#
-# TABLES = [
-#     Table1Name,
-#     Table2Name,
-#     etc.
-# ]
-#
-# Note: The table order is important - Create the tables that have
-# foreign keys *after* the tables they link to have been created
-#----------------------------------------------------------------------------
-
 TABLES = [
     UserTable,
     FamiliesTable,
@@ -189,7 +152,5 @@ TABLES = [
     PeopleTable, 
     StoryTable,
     InvolvesTable,
-    ImagesTable,
-   
-    # Add more tables here...
+
 ]
