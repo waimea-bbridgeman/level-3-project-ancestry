@@ -54,7 +54,6 @@ def show_home():
 def show_login_form():
     return render_template("pages/login.jinja")
 
-
 # -----------------------------------------------------------
 # Login User
 # -----------------------------------------------------------
@@ -63,6 +62,7 @@ def login_user():
     username = request.form.get("username", "").strip().lower()
     password = request.form.get("password", "").strip()
 
+    # Select user info from db 
     with connect_db() as db:
         sql = """
             SELECT id, forename, surname, password_hash
@@ -93,14 +93,12 @@ def login_user():
         flash("Login successful", "success")
         return redirect("/")
 
-
 # -----------------------------------------------------------
 # Sign-up Page
 # -----------------------------------------------------------
 @app.get("/user/new")
 def show_signup_form():
     return render_template("pages/sign-up.jinja")
-
 
 # -----------------------------------------------------------
 # Sign-up User
@@ -112,6 +110,7 @@ def process_new_user():
     username = request.form.get("username", "").strip().lower()
     password = request.form.get("password", "").strip()
 
+    # Check if the username is available 
     with connect_db() as db:
         sql = "SELECT id FROM users WHERE username=?"
         params = (username,)
@@ -121,6 +120,7 @@ def process_new_user():
             flash(f"Username '{username}' already exists", "error")
             return redirect("/user/new")
 
+        # Make a hash of their password and add everything to the db 
         password_hash = generate_password_hash(password)
 
         sql = """
@@ -140,6 +140,7 @@ def process_new_user():
 @app.get("/fam/pick")
 def select_family():
     with connect_db() as db:
+        # Select users families 
         sql = """
             SELECT families.id, families.surname, members.role
             FROM members
@@ -153,11 +154,12 @@ def select_family():
 
 
 # -----------------------------------------------------------
-# Stories Page
+# Family Page
 # -----------------------------------------------------------
 @app.get("/fam/<int:id>")
 def show_family_home(id):
     with connect_db() as db:
+        # Select chosen family 
         sql = """
             SELECT families.id, families.surname, members.role
             FROM families
@@ -167,17 +169,19 @@ def show_family_home(id):
         params = (id, session["user"]["id"])
         family = db.execute(sql, params).fetchone()
 
-        # Are they  already in the family?
+        # Make sure they're in the family
         if not family:
             flash(f"You're not in that family", "error")
             return redirect("/")
 
+        # Populate the session with relevant data 
         session["family"] = {
             "id": family["id"],
             "surname": family["surname"],
             "role": family["role"],
         }
 
+        # Get the users stories from the family
         sql = """
             SELECT id, title, date, body
             FROM stories
@@ -186,9 +190,7 @@ def show_family_home(id):
         params = (id, session["user"]["id"])
         stories = db.execute(sql, params).fetchall()
 
-        return render_template(
-            "pages/stories.jinja", family=family, stories=stories, title="My Stories"
-        )
+        return render_template("pages/stories.jinja", family=family, stories=stories, title="My Stories")
 
 
 # -----------------------------------------------------------
@@ -196,10 +198,12 @@ def show_family_home(id):
 # -----------------------------------------------------------
 @app.get("/stories")
 def show_all_stories():
+    # Check the user has selected a family 
     if not session.get("family"):
         flash(f"Pick or create a family first", "error")
         return redirect("/")
 
+    # Get story info 
     with connect_db() as db:
         sql = """
             SELECT id, title, date, body
@@ -209,9 +213,7 @@ def show_all_stories():
         params = (session["family"]["id"],)
         stories = db.execute(sql, params).fetchall()
 
-        return render_template(
-            "pages/stories.jinja", stories=stories, title="All Stories"
-        )
+        return render_template("pages/stories.jinja", stories=stories, title="All Stories")
 
 
 # -----------------------------------------------------------
@@ -229,10 +231,10 @@ def show_create_fam():
 def create_fam():
     surname = request.form.get("surname", "").strip()
 
-    # Create a 6 didget code for the family
+    # Create a 6 digit code for the family
     code = "".join(random.choices(string.ascii_uppercase + string.digits, k=6))
 
-    # add the code and family name to db
+    # Add the code and family name to db
     with connect_db() as db:
         sql = """
             INSERT INTO families (surname, code)
@@ -241,6 +243,7 @@ def create_fam():
         params = (surname, code)
         db.execute(sql, params)
 
+        # Find the ID of the new family
         sql = """
                 SELECT id
                 FROM families
@@ -249,6 +252,7 @@ def create_fam():
         params = (code,)
         family = db.execute(sql, params).fetchone()
 
+        # Add the family creator as the owner 
         sql = """
             INSERT INTO members (family_id, user_id, role)
             VALUES (?, ?, ?)
@@ -267,6 +271,7 @@ def create_fam():
 @app.get("/join/new")
 def join_code_display():
     with connect_db() as db:
+        # Select user_id and join code 
         sql = """
             SELECT families.code
             FROM families
@@ -330,7 +335,6 @@ def join_code():
         flash("You've joined the family!", "success")
         return redirect("/")
 
-
 # -----------------------------------------------------------
 # Join Family Page
 # -----------------------------------------------------------
@@ -338,14 +342,12 @@ def join_code():
 def join_fam():
     return render_template("pages/join-fam.jinja")
 
-
 # -----------------------------------------------------------
 # Add Person Page
 # -----------------------------------------------------------
 @app.get("/people/new")
 def add_person_page():
     return render_template("pages/add-person.jinja")
-
 
 # -----------------------------------------------------------
 # All People Page
@@ -437,7 +439,6 @@ def add_persondb():
 def show_story_form():
     return render_template("pages/add-story.jinja")
 
-
 # -----------------------------------------------------------
 # Post Story
 # -----------------------------------------------------------
@@ -500,6 +501,7 @@ def manage_fam():
         params = (family_id,)
         family = db.execute(sql, params).fetchone()
 
+        # Select the relevant data from the db 
         sql = """
             SELECT users.id AS user_id, users.forename, users.surname, members.role
             FROM members
@@ -509,9 +511,7 @@ def manage_fam():
         params = (family_id,)
         members = db.execute(sql, params).fetchall()
 
-        return render_template(
-            "pages/family-admin.jinja", family=family, members=members
-        )
+        return render_template("pages/family-admin.jinja", family=family, members=members)
 
 
 # -----------------------------------------------------------
