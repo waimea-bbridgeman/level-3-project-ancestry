@@ -72,12 +72,12 @@ def login_user():
         params = (username,)
         user = db.execute(sql, params).fetchone()
 
-        # Check for user 
+        # Check for user
         if not user:
             flash(f"Unknown user", "error")
             return redirect("/login")
 
-        # Check password hash 
+        # Check password hash
         if not check_password_hash(user["password_hash"], password):
             flash(f"Incorrect password", "error")
             return redirect("/login")
@@ -186,7 +186,10 @@ def show_family_home(id):
         params = (id, session["user"]["id"])
         stories = db.execute(sql, params).fetchall()
 
-        return render_template("pages/stories.jinja", family=family, stories=stories, title="My Stories")
+        return render_template(
+            "pages/stories.jinja", family=family, stories=stories, title="My Stories"
+        )
+
 
 # -----------------------------------------------------------
 # All Stories Page
@@ -206,7 +209,10 @@ def show_all_stories():
         params = (session["family"]["id"],)
         stories = db.execute(sql, params).fetchall()
 
-        return render_template("pages/stories.jinja", stories=stories, title="All Stories")
+        return render_template(
+            "pages/stories.jinja", stories=stories, title="All Stories"
+        )
+
 
 # -----------------------------------------------------------
 # Create Family Page
@@ -215,6 +221,7 @@ def show_all_stories():
 def show_create_fam():
     return render_template("pages/create-fam.jinja")
 
+
 # -----------------------------------------------------------
 # Create Family
 # -----------------------------------------------------------
@@ -222,10 +229,10 @@ def show_create_fam():
 def create_fam():
     surname = request.form.get("surname", "").strip()
 
-    # Create a 6 didget code for the family 
+    # Create a 6 didget code for the family
     code = "".join(random.choices(string.ascii_uppercase + string.digits, k=6))
 
-    # add the code and family name to db 
+    # add the code and family name to db
     with connect_db() as db:
         sql = """
             INSERT INTO families (surname, code)
@@ -253,6 +260,7 @@ def create_fam():
 
     return redirect("/")
 
+
 # -----------------------------------------------------------
 # Join Code Page
 # -----------------------------------------------------------
@@ -269,6 +277,7 @@ def join_code_display():
         code = db.execute(sql, params).fetchone()
 
     return render_template("pages/join-fam.jinja", code=code)
+
 
 # -----------------------------------------------------------
 # Process join form
@@ -321,6 +330,7 @@ def join_code():
         flash("You've joined the family!", "success")
         return redirect("/")
 
+
 # -----------------------------------------------------------
 # Join Family Page
 # -----------------------------------------------------------
@@ -328,24 +338,26 @@ def join_code():
 def join_fam():
     return render_template("pages/join-fam.jinja")
 
+
 # -----------------------------------------------------------
 # Add Person Page
 # -----------------------------------------------------------
 @app.get("/people/new")
-def add_person():
+def add_person_page():
     return render_template("pages/add-person.jinja")
+
 
 # -----------------------------------------------------------
 # All People Page
 # -----------------------------------------------------------
-@app.get("/people")
+@app.get("/all-people")
 def show_people():
-    # Check if the session has a family selected 
+    # Check if the session has a family selected
     if not session.get("family"):
         flash(f"Pick or create a family first", "error")
         return redirect("/")
 
-    # Get info about a person 
+    # Get info about a person
     with connect_db() as db:
         sql = """
             SELECT id, forename, surname, image
@@ -358,12 +370,73 @@ def show_people():
 
         return render_template("pages/all-people.jinja", people=people)
 
+
+# -----------------------------------------------------------
+# Add Person
+# -----------------------------------------------------------
+@app.post("/person")
+def add_persondb():
+    if not session.get("family"):
+        flash(f"Pick or create a family first", "error")
+        return redirect("/")
+
+    # Get the normal text fields from the form
+    forename = request.form.get("forename", "").strip()
+    surname = request.form.get("surname", "").strip()
+    dob = request.form.get("dob", "").strip()
+    notes = request.form.get("notes", "").strip()
+    links = request.form.get("links", "").strip()
+
+    # Validate data
+    if not forename and not surname:
+        flash(f"Enter at least a first or last name (even just 'Grandad')", "error")
+        return redirect("/people/new")
+
+    forename = html.escape(forename)
+    surname = html.escape(surname)
+    dob = html.escape(dob)
+    notes = html.escape(notes)
+    links = html.escape(links)
+
+    # Get the file selected via the form
+    image = request.files.get("image", None)
+    if not image or image.filename == "":
+        flash(f"There was a problem uploading the image", "error")
+        return redirect("/people/new")
+
+    # Sanitise filename and make it unique
+    filename = secure_filename(image.filename)
+    random_prefix = uuid.uuid4().hex[:12]
+    unique_filename = f"{random_prefix}_{filename}"
+
+    # Get the path of the upload folder
+    filepath = os.path.join(IMAGES_FOLDER, unique_filename)
+
+    # Save file to disk
+    image.save(filepath)
+
+    family_id = session["family"]["id"]
+
+    # Add the form data and the upload filename to the DB
+    with connect_db() as db:
+        sql = """
+            INSERT INTO people (forename, surname, dob, notes, image, links, family_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """
+        params = (forename, surname, dob, notes, unique_filename, links, family_id)
+        db.execute(sql, params)
+
+        flash("Person added", "success")
+        return redirect("/all-people")
+
+
 # -----------------------------------------------------------
 # Show Story Form
 # -----------------------------------------------------------
 @app.get("/story")
 def show_story_form():
     return render_template("pages/add-story.jinja")
+
 
 # -----------------------------------------------------------
 # Post Story
@@ -411,7 +484,7 @@ def post_story():
 # -----------------------------------------------------------
 @app.get("/family-admin")
 def manage_fam():
-    # Check there is a family in the session 
+    # Check there is a family in the session
     if not session.get("family"):
         flash(f"Pick or create a family first", "error")
         return redirect("/")
@@ -451,12 +524,12 @@ def delete_member(user_id):
         flash(f"Only the family owner can remove members", "error")
         return redirect("/")
 
-    # Make sure the owner can't remove himself 
+    # Make sure the owner can't remove himself
     if user_id == session["user"]["id"]:
         flash(f"You can't remove yourself", "error")
         return redirect("/family-admin")
 
-    # delete the memeber from the family 
+    # delete the memeber from the family
     with connect_db() as db:
         sql = """
             DELETE FROM members
@@ -502,7 +575,7 @@ def leave_family():
 # -----------------------------------------------------------
 @app.get("/logout")
 def logout_user():
-    # Clear the session 
+    # Clear the session
     session.clear()
     flash(f"You have been logged out", "success")
     return redirect("/")

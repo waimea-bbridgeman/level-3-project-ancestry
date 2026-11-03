@@ -33,9 +33,6 @@
 
     --content-width:     60rem;
 
-    --border-radius:     0.5rem;
-    --drop-shadow:       0 0.5rem 1rem #0005;
-
 }
 
 
@@ -88,10 +85,6 @@ body > header {
         gap: var(--padding);
         padding: var(--padding);
         background-color: var(--base-col-dark);
-
-        a {
-            font-size: 1.2rem;
-        }
     }
 
     #toggle:has(input:checked) + nav {
@@ -106,7 +99,6 @@ body > header {
             position: static;
             flex-direction: row;
             flex-wrap: wrap;
-            justify-content: center;
             gap: var(--padding) var(--gap);
             padding: 0;
             background-color: transparent;
@@ -121,14 +113,14 @@ body > header {
 
 /* Page Headings -----------------------------------------------*/
 
-main > h2 {
-    font-size: 2rem;
-    text-align: center;
-    margin-block: var(--gap);
-}
-
+main > h2,
 main > h3 {
     text-align: center;
+}
+
+main > h2 {
+    font-size: 2rem;
+    margin-block: var(--gap);
 }
 
 
@@ -141,7 +133,7 @@ button,
     background-color: var(--button-bg);
     color: var(--button-col);
     border: none;
-    border-radius: var(--border-radius);
+    border-radius: 0.5rem;
     font: inherit;
     text-decoration: none;
     cursor: pointer;
@@ -172,8 +164,7 @@ form {
 
     background-color: var(--panel-bg);
     border: 3px solid var(--border-col);
-    border-radius: var(--border-radius);
-    box-shadow: var(--drop-shadow);
+    border-radius: 0.5rem;
 
     label {
         display: flex;
@@ -186,9 +177,33 @@ form {
     select {
         padding: var(--padding-sm);
         border: 1px solid var(--border-col);
-        border-radius: var(--border-radius);
+        border-radius: 0.5rem;
         font: inherit;
     }
+}
+
+
+/* Cards (stories, families, people) -----------------------------*/
+
+.card,
+.stories {
+    display: block;
+    padding: var(--padding);
+
+    background-color: var(--card-bg);
+    color: var(--text-col-inv);
+    border-left: 6px solid var(--accent-col);
+    border-radius: 0.5rem;
+    text-decoration: none;
+
+    h3 {
+        margin: 0;
+    }
+}
+
+.card {
+    max-width: 30rem;
+    margin: var(--padding) auto;
 }
 
 
@@ -208,23 +223,13 @@ form {
     }
 
     .stories {
-        padding: var(--padding);
-
-        background-color: var(--card-bg);
-        color: var(--text-col-inv);
-        border-top: 5px solid var(--accent-col);
-        border-radius: var(--border-radius);
-        box-shadow: var(--drop-shadow);
-
         header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
         }
 
         footer {
             font-size: 0.8rem;
-            font-style: italic;
         }
     }
 
@@ -235,55 +240,22 @@ form {
 }
 
 
-/* Family and People Cards --------------------------------------------------*/
+/* People ----------------------------------------------------------*/
 
-.card {
-    display: block;
-    max-width: 30rem;
-    margin: var(--padding) auto;
-    padding: var(--padding);
-
-    background-color: var(--card-bg);
-    color: var(--text-col-inv);
-    border-left: 6px solid var(--accent-col);
-    border-radius: var(--border-radius);
-    box-shadow: var(--drop-shadow);
-    text-decoration: none;
-
-    h3 {
-        margin: 0;
-    }
-}
-
-#people .card {
-    display: flex;
-    align-items: center;
-    gap: var(--padding);
+.thumb,
+.photo {
+    object-fit: cover;
+    border-radius: 0.5rem;
 }
 
 .thumb {
-    width: 3.5rem;
-    height: 3.5rem;
-    object-fit: cover;
-    border-radius: 50%;
-}
-
-
-/* Person Page --------------------------------------------------*/
-
-#person {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: var(--gap);
+    width: 3rem;
+    height: 3rem;
 }
 
 .photo {
     width: 12rem;
     height: 12rem;
-    object-fit: cover;
-    border: 3px solid var(--accent-col);
-    border-radius: var(--border-radius);
 }
 
 
@@ -294,7 +266,6 @@ form {
     padding: var(--padding-sm) var(--padding);
     border: 2px dashed var(--accent-col);
     font-size: 2rem;
-    letter-spacing: 0.3rem;
 }
 
 #members {
@@ -304,12 +275,8 @@ form {
     li {
         display: flex;
         gap: var(--padding);
-        padding: var(--padding-sm) var(--padding);
-        margin-block: var(--padding-sm);
-
-        background-color: var(--panel-bg);
-        border: 2px solid var(--border-col);
-        border-radius: var(--border-radius);
+        padding: var(--padding-sm) 0;
+        border-bottom: 1px solid var(--border-col);
 
         strong {
             margin-left: auto;

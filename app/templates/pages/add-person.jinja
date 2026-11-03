@@ -5,40 +5,44 @@
 {% endblock %}
 
 {% block content %}
-   
-  <h2>Add a person</h2>
 
-    <form method="post" action="/user">
+    <h2>Add a person</h2>
 
-          <label>
-            Forename 
-            <input type="text" name="forename" required>
-          </label>
-
-
-          <label>
-            Surname 
-            <input type="text" name="surname" required>
-          </label>
-    
-
-          <label>
-            notes
-            <input type="text" name="username" required>
-          </label>
-    
+    <form method="post" action="/person" enctype="multipart/form-data">
 
         <label>
-           Date of Birth
-            <input type="date" name="dob" required>
+            Forename
+            <input type="text" name="forename">
         </label>
-    
-        {# add cover image #}
 
-        {# any social media links #}
+        <label>
+            Surname
+            <input type="text" name="surname">
+        </label>
+
+        <label>
+            Notes
+            <textarea name="notes"></textarea>
+        </label>
+
+        <label>
+            Date of Birth
+            <input type="date" name="dob">
+        </label>
+
+        <label>
+            Cover image
+            <input type="file" name="image" accept="image/png, image/jpeg, image/gif, image/webp">
+        </label>
+
+        <label>
+            Social media links
+            <textarea name="links" placeholder="One link per line"></textarea>
+        </label>
 
         <button>Add</button>
-        <button>Cancel</button>
-    
+        <button><a class="button" href="/all-people.jinja">Cancel</a></button>
+
     </form>
+
 {% endblock %}

@@ -1,5 +1,5 @@
 {#=====================================================
-  All People
+All People
 =====================================================#}
 
 {% extends 'pages/_base.jinja' %}
@@ -7,32 +7,19 @@
 
 {% block content %}
 
-    <h2>All People</h2>
+<h2>All People</h2>
 
-    <section id="people">
+<section id="people">
 
-        {% for people in peoples %}
+    {% for person in people %}
+    <a class="card" href="/person/{{ person.id }}">
+        {% if person.image %}
+        <img class="thumb" src="/static/images/{{ person.image }}" alt="">
+        {% endif %}
+        <h3>{{ person.forename }} {{ person.surname }}</h3>
+    </a>
+    {% endfor %}
 
-            <div class="stories">
-
-                <header>
-                    <h3>{{ people.forename }}</h3>
-                    <h3>{{ people.surname }}</h3>
-                   
-                </header>
-
-                    <p>{{ people.notes }}</p>
-                    <p>{{ people.dob }}</p>
-
-            </div>
-
-        {% else %}
-
-            <p>No People!</p>
-
-        {% endfor %}
-
-    </section>
+</section>
 
 {% endblock %}
-
