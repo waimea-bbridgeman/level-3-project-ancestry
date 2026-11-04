@@ -6,32 +6,32 @@
 :root {
 
     --base-col: #12284a;
-    --accent-col:#ffae54;
-    --paper-col:#f5edd9;
+    --accent-col: #ffae54;
+    --paper-col: #f5edd9;
 
-    --base-col-light:    color-mix(in srgb, var(--base-col), #fff 20%);
-    --base-col-dark:     color-mix(in srgb, var(--base-col), #000 30%);
+    --base-col-light: color-mix(in srgb, var(--base-col), #fff 20%);
+    --base-col-dark: color-mix(in srgb, var(--base-col), #000 30%);
 
-    --text-col:          #fff;
-    --text-col-inv:      #000;
+    --text-col: #fff;
+    --text-col-inv: #000;
 
-    --page-bg:           var(--base-col);
-    --panel-bg:          var(--base-col-light);
-    --card-bg:           var(--paper-col);
+    --page-bg: var(--base-col);
+    --panel-bg: var(--base-col-light);
+    --card-bg: var(--paper-col);
 
-    --border-col:        var(--base-col-dark);
+    --border-col: var(--base-col-dark);
 
     --link-col: var(--accent-col);
 
     --button-col: var(--base-col);
-    --button-bg:         var(--accent-col);
+    --button-bg: var(--accent-col);
 
-    --padding:           1rem;
-    --padding-sm:        0.5rem;
+    --padding: 1rem;
+    --padding-sm: 0.5rem;
 
-    --gap:               2rem;
+    --gap: 2rem;
 
-    --content-width:     60rem;
+    --content-width: 60rem;
 
 }
 
@@ -64,7 +64,7 @@ a {
 
 /* Header & Nav -----------------------------------------------*/
 
-body > header {
+body>header {
     display: flex;
     gap: 1rem;
     align-items: center;
@@ -86,11 +86,11 @@ body > header {
         background-color: var(--base-col-dark);
     }
 
-    #toggle:has(input:checked) + nav {
+    #toggle:has(input:checked)+nav {
         display: flex;
     }
 
-    @media (width >= 992px) {
+    @media (width >=992px) {
         justify-content: center;
 
         nav {
@@ -112,12 +112,12 @@ body > header {
 
 /* Page Headings -----------------------------------------------*/
 
-main > h2,
-main > h3 {
+h3 {
     text-align: center;
 }
 
-main > h2 {
+h2 {
+    text-align: center;
     font-size: 2rem;
     margin-block: var(--gap);
 }
@@ -180,6 +180,32 @@ form {
     }
 }
 
+details {
+    padding: var(--padding-sm);
+    background-color: #fff;
+    color: var(--text-col-inv);
+    border: 1px solid var(--border-col);
+    border-radius: 0.5rem;
+}
+
+summary {
+    cursor: pointer;
+}
+
+details[open] summary {
+    margin-bottom: var(--padding-sm);
+}
+
+details label {
+    flex-direction: row;
+    align-items: center;
+}
+
+input[type="checkbox"] {
+    width: 1.25rem;
+    height: 1.25rem;
+    padding: 0;
+}
 
 /* Cards (stories, families, people) -----------------------------*/
 
@@ -187,7 +213,6 @@ form {
 .stories {
     display: block;
     padding: var(--padding);
-
     background-color: var(--card-bg);
     color: var(--text-col-inv);
     border-left: 6px solid var(--accent-col);
@@ -212,11 +237,11 @@ form {
     gap: var(--gap);
     grid-template-columns: 1fr;
 
-    @media (width >= 500px) {
+    @media (width >=500px) {
         grid-template-columns: 1fr 1fr;
     }
 
-    @media (width >= 800px) {
+    @media (width >=800px) {
         grid-template-columns: 1fr 1fr 1fr;
     }
 
@@ -231,7 +256,7 @@ form {
         }
     }
 
-    > p {
+    >p {
         grid-column: 1 / -1;
         text-align: center;
     }

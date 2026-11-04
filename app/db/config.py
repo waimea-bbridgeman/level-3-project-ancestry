@@ -32,7 +32,7 @@ class UserTable:
     SEED_DATA = """
         INSERT INTO users (forename, surname, username, password_hash)
         VALUES ("Test", "User", "test", "scrypt:32768:8:1$n7eJTucLbaGmUpAM$c1776374a8d456a6eaf61bccc08db5e1fcc4ff3b3983d364c45ab13074255eeae0a393afb11f99a9fe63fb1d980992ace17a72ba70324523b11e92e36cbe4252"),
-        ("test1", "test1", "test1", "")
+        VALUES ("test1", "test1", "test1", "scrypt:32768:8:1$1MsNfdrVCPjFzsTv$430b61171560062c94104646a37bcac07709e1989346c27a1390f5f3ff94a2d9b3b650953b02c90254cdc104ea696ae08f0f44c198197066f2f6054d03c8e0df")
     """
 
 

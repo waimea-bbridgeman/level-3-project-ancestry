@@ -29,6 +29,12 @@
 
                 <p>{{ story.body }}</p>
 
+                {% for person in tagged %}
+                    {% if person.story_id == story.id %}
+                        Involves: <span class="tag">{{ person.forename }} {{ person.surname }}</span>
+                    {% endif %}
+                {% endfor %}
+                
                 <footer>
                     Date: {{ story.date }}
                 </footer>

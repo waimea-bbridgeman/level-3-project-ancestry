@@ -186,15 +186,29 @@ def show_family_home(id):
 
         # Get the users stories from the family
         sql = """
-            SELECT id, title, date, body
+            SELECT id, title, date, body, user_id
             FROM stories
             WHERE family_id = ? AND user_id = ?
         """
         params = (id, session["user"]["id"])
         stories = db.execute(sql, params).fetchall()
 
+        # Get who is tagged in the stories
+        sql = """
+            SELECT involves.story_id, people.forename, people.surname
+            FROM involves
+            JOIN people ON people.id = involves.person_id
+            WHERE people.family_id = ?
+        """
+        params = (id,)
+        tagged = db.execute(sql, params).fetchall()
+
         return render_template(
-            "pages/stories.jinja", family=family, stories=stories, title="My Stories"
+            "pages/stories.jinja",
+            family=family,
+            stories=stories,
+            tagged=tagged,
+            title="My Stories",
         )
 
 
@@ -211,16 +225,25 @@ def show_all_stories():
     # Get story info
     with connect_db() as db:
         sql = """
-            SELECT id, title, date, body
+            SELECT id, title, date, body, user_id
             FROM stories
             WHERE family_id = ?
         """
-        # JOIN involves ON story_id 
         params = (session["family"]["id"],)
         stories = db.execute(sql, params).fetchall()
 
+        # Get who is tagged in the stories
+        sql = """
+            SELECT involves.story_id, people.forename, people.surname
+            FROM involves
+            JOIN people ON people.id = involves.person_id
+            WHERE people.family_id = ?
+        """
+        params = (session["family"]["id"],)
+        tagged = db.execute(sql, params).fetchall()
+
         return render_template(
-            "pages/stories.jinja", stories=stories, title="All Stories"
+            "pages/stories.jinja", stories=stories, tagged=tagged, title="All Stories"
         )
 
 
@@ -442,41 +465,51 @@ def add_persondb():
         flash("Person added", "success")
         return redirect("/all-people")
 
-
 # -----------------------------------------------------------
 # Show Story Form
 # -----------------------------------------------------------
 @app.get("/story")
 def show_story_form():
+    if not session.get("family"):
+        flash(f"Pick or create a family first", "error")
+        return redirect("/")
+
+    # 
     with connect_db() as db:
         sql = """
-            SELECT * 
+            SELECT id, forename, surname
             FROM people
+            WHERE family_id = ?
+            ORDER BY forename
         """
-        params = ()
+        params = (session["family"]["id"],)
         people = db.execute(sql, params).fetchall()
-    return render_template("pages/add-story.jinja", people=people)
 
+    return render_template("pages/add-story.jinja", people=people)
 
 # -----------------------------------------------------------
 # Post Story
 # -----------------------------------------------------------
 @app.post("/story/new")
 def post_story():
+    if not session.get("family"):
+        flash(f"Pick or create a family first", "error")
+        return redirect("/")
 
     # Get form data
     title = request.form.get("title", "").strip()
     body = request.form.get("body", "").strip()
     date = request.form.get("date", "").strip()
+    people_ids = request.form.getlist("people")
 
     # Validate data
     if not title:
-        flash("Title is required", "error")
-        return redirect("/story/new")
+        flash(f"Title is required", "error")
+        return redirect("/story")
 
     if len(title) > 40:
-        flash("Title is too long (max 40 chars)", "error")
-        return redirect("/story/new")
+        flash(f"Title is too long (max 40 chars)", "error")
+        return redirect("/story")
 
     # Escape text inputs
     title = html.escape(title)
@@ -493,12 +526,20 @@ def post_story():
             VALUES (?, ?, ?, ?, ?)
         """
         params = (title, body, date, user_id, family_id)
-        db.execute(sql, params)
+        result = db.execute(sql, params)
+        story_id = result.lastrowid
 
-    flash("Story added")
-    return redirect(f"/fam/{family_id}")
+        # Tag each person who was ticked on the form
+        for person_id in people_ids:
+            sql = """
+                INSERT INTO involves (story_id, person_id)
+                VALUES (?, ?)
+            """
+            params = (story_id, person_id)
+            db.execute(sql, params)
 
-
+        flash("Story added", "success")
+        return redirect(f"/fam/{family_id}")
 # -----------------------------------------------------------
 # Family Management
 # -----------------------------------------------------------
@@ -530,7 +571,9 @@ def manage_fam():
         params = (family_id,)
         members = db.execute(sql, params).fetchall()
 
-        return render_template("pages/family-admin.jinja", family=family, members=members)
+        return render_template(
+            "pages/family-admin.jinja", family=family, members=members
+        )
 
 
 # -----------------------------------------------------------

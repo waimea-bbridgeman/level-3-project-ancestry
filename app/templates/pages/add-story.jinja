@@ -29,17 +29,19 @@ Add Story Page
          <textarea name="body" placeholder="e.g. Trig called Rodney Dave" required></textarea>
       </label>
 
-      <label>
-         Who is in this story?
-         <select name="people" multiple>
-            {% for person in people %}
-            <option value="{{ person.id }}">{{ person.forename }} {{ person.surname }}</option>
-            {% endfor %}
-         </select>
-         <small>Hold Ctrl to pick more than one.
-            Not listed? <a href="/people/new">Add them first</a>.</small>
-      </label>
-      
+      <details>
+         <summary>Who is in this story?</summary>
+
+         {% for person in people %}
+         <label>
+            <input name="people" value="{{ person.id }}" type="checkbox">
+            {{ person.forename }} {{ person.surname }}
+         </label>
+         {% else %}
+         <p>No people yet. <a href="/people/new">Add someone first</a>.</p>
+         {% endfor %}
+      </details>
+
 
       {# add image #}
 
