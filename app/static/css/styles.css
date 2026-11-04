@@ -5,9 +5,9 @@
 
 :root {
 
-    --base-col:          #12284a;
-    --accent-col:        #ffae54;
-    --paper-col:         #f5edd9;
+    --base-col: #12284a;
+    --accent-col:#ffae54;
+    --paper-col:#f5edd9;
 
     --base-col-light:    color-mix(in srgb, var(--base-col), #fff 20%);
     --base-col-dark:     color-mix(in srgb, var(--base-col), #000 30%);
@@ -21,9 +21,9 @@
 
     --border-col:        var(--base-col-dark);
 
-    --link-col:          var(--accent-col);
+    --link-col: var(--accent-col);
 
-    --button-col:        var(--base-col);
+    --button-col: var(--base-col);
     --button-bg:         var(--accent-col);
 
     --padding:           1rem;
@@ -61,7 +61,6 @@ main {
 a {
     color: var(--link-col);
 }
-
 
 /* Header & Nav -----------------------------------------------*/
 
@@ -126,8 +125,7 @@ main > h2 {
 
 /* Buttons --------------------------------------------------*/
 
-button,
-.button {
+button {
     display: inline-block;
     padding: var(--padding-sm) var(--padding);
     background-color: var(--button-bg);

@@ -1,42 +1,51 @@
 {#=====================================================
-  Add Story Page
+Add Story Page
 =====================================================#}
 
 {% extends 'pages/_base.jinja' %}
 
-
+{# Tag a person to a story #}
 {% block content %}
 
 <div class="storyform">
-    <h1>Post a new story!</h1>
+   <h1>Post a new story!</h1>
 
-    <form method="post" action="/story/new">
-        <h3>New Story</h3>
+   <form method="post" action="/story/new">
+      <h3>New Story</h3>
 
-     <label>
-        Title
-        <input name="title" type="text" placeholder="e.g. Rodney meets Trig " required>
-     </label>
-
-    
       <label>
-         Date 
+         Title
+         <input name="title" type="text" placeholder="e.g. Rodney meets Trig " required>
+      </label>
+
+
+      <label>
+         Date
          <input name="date" type="date" placeholder="date" required>
       </label>
 
-     <label>
-        Body
-        <textarea name="body" placeholder="e.g. Trig called Rodney Dave" required></textarea>
-     </label>
+      <label>
+         Body
+         <textarea name="body" placeholder="e.g. Trig called Rodney Dave" required></textarea>
+      </label>
 
-     {# add person #}
+      <label>
+         Who is in this story?
+         <select name="people" multiple>
+            {% for person in people %}
+            <option value="{{ person.id }}">{{ person.forename }} {{ person.surname }}</option>
+            {% endfor %}
+         </select>
+         <small>Hold Ctrl to pick more than one.
+            Not listed? <a href="/people/new">Add them first</a>.</small>
+      </label>
+      
 
-     {# add image #}
+      {# add image #}
 
-     <button>Add Story</button>
-     <button><a href="/stories">Cancel</a></button>
-    </form>
+      <button>Add Story</button>
+      <button><a href="/stories">Cancel</a></button>
+   </form>
 </div>
 
 {% endblock %}
-

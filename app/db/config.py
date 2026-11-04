@@ -24,7 +24,7 @@ class UserTable:
             forename TEXT NOT NULL,
             surname TEXT NOT NULL, 
             username TEXT NOT NULL UNIQUE, 
-            password_hash TEXT NOT NULL,
+            password_hash TEXT NOT NULL
         )
     """
 
