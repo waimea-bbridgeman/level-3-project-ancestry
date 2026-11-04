@@ -54,6 +54,7 @@ def show_home():
 def show_login_form():
     return render_template("pages/login.jinja")
 
+
 # -----------------------------------------------------------
 # Login User
 # -----------------------------------------------------------
@@ -62,7 +63,7 @@ def login_user():
     username = request.form.get("username", "").strip().lower()
     password = request.form.get("password", "").strip()
 
-    # Select user info from db 
+    # Select user info from db
     with connect_db() as db:
         sql = """
             SELECT id, forename, surname, password_hash
@@ -93,12 +94,14 @@ def login_user():
         flash("Login successful", "success")
         return redirect("/")
 
+
 # -----------------------------------------------------------
 # Sign-up Page
 # -----------------------------------------------------------
 @app.get("/user/new")
 def show_signup_form():
     return render_template("pages/sign-up.jinja")
+
 
 # -----------------------------------------------------------
 # Sign-up User
@@ -110,7 +113,7 @@ def process_new_user():
     username = request.form.get("username", "").strip().lower()
     password = request.form.get("password", "").strip()
 
-    # Check if the username is available 
+    # Check if the username is available
     with connect_db() as db:
         sql = "SELECT id FROM users WHERE username=?"
         params = (username,)
@@ -120,7 +123,7 @@ def process_new_user():
             flash(f"Username '{username}' already exists", "error")
             return redirect("/user/new")
 
-        # Make a hash of their password and add everything to the db 
+        # Make a hash of their password and add everything to the db
         password_hash = generate_password_hash(password)
 
         sql = """
@@ -140,7 +143,7 @@ def process_new_user():
 @app.get("/fam/pick")
 def select_family():
     with connect_db() as db:
-        # Select users families 
+        # Select users families
         sql = """
             SELECT families.id, families.surname, members.role
             FROM members
@@ -159,7 +162,7 @@ def select_family():
 @app.get("/fam/<int:id>")
 def show_family_home(id):
     with connect_db() as db:
-        # Select chosen family 
+        # Select chosen family
         sql = """
             SELECT families.id, families.surname, members.role
             FROM families
@@ -174,7 +177,7 @@ def show_family_home(id):
             flash(f"You're not in that family", "error")
             return redirect("/")
 
-        # Populate the session with relevant data 
+        # Populate the session with relevant data
         session["family"] = {
             "id": family["id"],
             "surname": family["surname"],
@@ -190,7 +193,9 @@ def show_family_home(id):
         params = (id, session["user"]["id"])
         stories = db.execute(sql, params).fetchall()
 
-        return render_template("pages/stories.jinja", family=family, stories=stories, title="My Stories")
+        return render_template(
+            "pages/stories.jinja", family=family, stories=stories, title="My Stories"
+        )
 
 
 # -----------------------------------------------------------
@@ -198,22 +203,25 @@ def show_family_home(id):
 # -----------------------------------------------------------
 @app.get("/stories")
 def show_all_stories():
-    # Check the user has selected a family 
+    # Check the user has selected a family
     if not session.get("family"):
         flash(f"Pick or create a family first", "error")
         return redirect("/")
 
-    # Get story info 
+    # Get story info
     with connect_db() as db:
         sql = """
             SELECT id, title, date, body
             FROM stories
             WHERE family_id = ?
         """
+        # JOIN involves ON story_id 
         params = (session["family"]["id"],)
         stories = db.execute(sql, params).fetchall()
 
-        return render_template("pages/stories.jinja", stories=stories, title="All Stories")
+        return render_template(
+            "pages/stories.jinja", stories=stories, title="All Stories"
+        )
 
 
 # -----------------------------------------------------------
@@ -252,7 +260,7 @@ def create_fam():
         params = (code,)
         family = db.execute(sql, params).fetchone()
 
-        # Add the family creator as the owner 
+        # Add the family creator as the owner
         sql = """
             INSERT INTO members (family_id, user_id, role)
             VALUES (?, ?, ?)
@@ -271,7 +279,7 @@ def create_fam():
 @app.get("/join/new")
 def join_code_display():
     with connect_db() as db:
-        # Select user_id and join code 
+        # Select user_id and join code
         sql = """
             SELECT families.code
             FROM families
@@ -335,6 +343,7 @@ def join_code():
         flash("You've joined the family!", "success")
         return redirect("/")
 
+
 # -----------------------------------------------------------
 # Join Family Page
 # -----------------------------------------------------------
@@ -342,12 +351,14 @@ def join_code():
 def join_fam():
     return render_template("pages/join-fam.jinja")
 
+
 # -----------------------------------------------------------
 # Add Person Page
 # -----------------------------------------------------------
 @app.get("/people/new")
 def add_person_page():
     return render_template("pages/add-person.jinja")
+
 
 # -----------------------------------------------------------
 # All People Page
@@ -437,7 +448,15 @@ def add_persondb():
 # -----------------------------------------------------------
 @app.get("/story")
 def show_story_form():
-    return render_template("pages/add-story.jinja")
+    with connect_db() as db:
+        sql = """
+            SELECT * 
+            FROM people
+        """
+        params = ()
+        people = db.execute(sql, params).fetchall()
+    return render_template("pages/add-story.jinja", people=people)
+
 
 # -----------------------------------------------------------
 # Post Story
@@ -501,7 +520,7 @@ def manage_fam():
         params = (family_id,)
         family = db.execute(sql, params).fetchone()
 
-        # Select the relevant data from the db 
+        # Select the relevant data from the db
         sql = """
             SELECT users.id AS user_id, users.forename, users.surname, members.role
             FROM members

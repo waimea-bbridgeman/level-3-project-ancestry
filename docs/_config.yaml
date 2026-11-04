@@ -1,7 +1,7 @@
 title: Ancestry thing
-description: A place to store things 
+description: A way to track family stories 
 author: Billy Bridgeman
 
 # If development is true, guides will be shown
-development: true
+development: false
 picotheme: azure

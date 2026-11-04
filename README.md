@@ -5,10 +5,10 @@
 This is an app that organises and records memories/stories in the family so they arent lost
 
 The app has the following key features:
-- Feature one
-- Feature two
-- Feature three
-- ...
+- Add stories 
+- Create a family 
+- Join a family 
+- Add people 
 
 ## Live Site
 
