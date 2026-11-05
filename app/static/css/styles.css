@@ -3,7 +3,7 @@
   By Billy Bridgeman
 ===========================================================*/
 
-:root {
+/* :root {
 
     --base-col: #12284a;
     --accent-col: #ffae54;
@@ -33,7 +33,7 @@
 
     --content-width: 60rem;
 
-}
+} */
 
 
 /* Overall Layout -----------------------------------------------*/
@@ -62,6 +62,19 @@ a {
     color: var(--link-col);
 }
 
+button,
+.button {
+    display: inline-block;
+    padding: var(--padding-sm) var(--padding);
+    background-color: var(--button-bg);
+    color: var(--button-col);
+    border: none;
+    border-radius: 0.5rem;
+    font: inherit;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+}
 /* Header & Nav -----------------------------------------------*/
 
 body>header {
@@ -262,7 +275,10 @@ input[type="checkbox"] {
     }
 }
 
-
+.card a,
+.stories a {
+    color: inherit;
+}
 /* People ----------------------------------------------------------*/
 
 .thumb,
@@ -285,12 +301,28 @@ input[type="checkbox"] {
 /* Family Page --------------------------------------------------*/
 
 .join-code {
-    display: inline-block;
+    display: block;
+    width: fit-content;
+    margin: 0 auto var(--gap);
     padding: var(--padding-sm) var(--padding);
     border: 2px dashed var(--accent-col);
     font-size: 2rem;
 }
 
+#members {
+    list-style: none;
+    max-width: 30rem;
+    margin-inline: auto;
+    padding: 0;
+
+    li {
+        display: grid;
+        grid-template-columns: 1fr auto 5rem;
+        gap: var(--padding);
+        padding: var(--padding-sm) 0;
+        border-bottom: 1px solid var(--border-col);
+    }
+}
 #members {
     list-style: none;
     padding: 0;

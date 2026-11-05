@@ -1,31 +1,30 @@
 {% extends "pages/_base.jinja" %}
 
 {% block title %}
-    Family Admin
+Family Admin
 {% endblock %}
 
 {% block content %}
 
-    <h2>{{ family.surname }} Family</h2>
+<h2>{{ family.surname }} Family</h2>
 
-    <h3>Join code</h3>
-    <p class="join-code">{{ family.code }}</p>
+<h3>Join code</h3>
+<p class="join-code">{{ family.code }}</p>
 
-    <h3>Members</h3>
+<h3>Members</h3>
 
-    <ul id="members">
-        {% for member in members %}
-            <li>
-                {{ member.forename }} {{ member.surname }}
-                <strong>{{ member.role }}</strong>
+<ul id="members">
+    {% for member in members %}
+    <li>
+        <span>{{ member.forename }} {{ member.surname }}</span>
+        <strong>{{ member.role }}</strong>
 
-                {% if member.role != "owner" %}
-                    <form method="post" action="/family-admin/remove/{{ member.user_id }}">
-                        <button type="submit">Remove</button>
-                    </form>
-                {% endif %}
-            </li>
-        {% endfor %}
-    </ul>
+        {% if session.family.role == "owner" and member.role != "owner" %}
+        <a href="/member/{{ member.user_id }}/delete"
+            onclick="return confirm('Remove this member from the family?')">Remove</a>
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
 
 {% endblock %}

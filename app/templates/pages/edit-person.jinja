@@ -1,0 +1,45 @@
+{% extends "pages/_base.jinja" %}
+
+{% block title %}Edit Person{% endblock %}
+
+{% block content %}
+
+    <h2>Edit {{ person.forename }} {{ person.surname }}</h2>
+
+    <form method="post" action="/person/{{ person.id }}" enctype="multipart/form-data">
+
+        <label>
+            Forename
+            <input name="forename" type="text" value="{{ person.forename }}">
+        </label>
+
+        <label>
+            Surname
+            <input name="surname" type="text" value="{{ person.surname }}">
+        </label>
+
+        <label>
+            Date of Birth
+            <input name="dob" type="date" value="{{ person.dob }}">
+        </label>
+
+        <label>
+            Notes
+            <textarea name="notes">{{ person.notes }}</textarea>
+        </label>
+
+        <label>
+            Social media links
+            <textarea name="links">{{ person.links }}</textarea>
+        </label>
+
+        <label>
+            Change image (optional)
+            <input name="image" type="file" accept="image/png, image/jpeg, image/gif, image/webp">
+        </label>
+
+        <button>Update Person</button>
+        <a class="button" href="/person/{{ person.id }}">Cancel</a>
+    </form>
+
+{% endblock %}

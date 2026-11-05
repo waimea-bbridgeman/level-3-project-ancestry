@@ -1,0 +1,42 @@
+{% extends 'pages/_base.jinja' %}
+
+{% block content %}
+
+<div class="storyform">
+   <h1>Edit your story</h1>
+
+   <form method="post" action="/story/{{ story.id }}">
+      <h3>Edit Story</h3>
+
+      <label>
+         Title
+         <input name="title" type="text" value="{{ story.title }}" required>
+      </label>
+
+      <label>
+         Date
+         <input name="date" type="date" value="{{ story.date }}" required>
+      </label>
+
+      <label>
+         Body
+         <textarea name="body" required>{{ story.body }}</textarea>
+      </label>
+
+      <details>
+         <summary>Who is in this story?</summary>
+
+         {% for person in people %}
+         <label>
+            <input name="people" value="{{ person.id }}" type="checkbox" {{ 'checked' if person.id in tagged_ids }}>
+            {{ person.forename }} {{ person.surname }}
+         </label>
+         {% endfor %}
+      </details>
+
+      <button>Update Story</button>
+      <a class="button" href="/story/{{ story.id }}">Cancel</a>
+   </form>
+</div>
+
+{% endblock %}

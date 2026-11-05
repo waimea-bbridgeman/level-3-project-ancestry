@@ -1,0 +1,45 @@
+{% extends 'pages/_base.jinja' %}
+
+{% block title %}Person{% endblock %}
+
+{% block content %}
+
+    <h2>{{ person.forename }} {{ person.surname }}</h2>
+
+    {% if person.image %}
+        <img class="photo" src="/static/images/{{ person.image }}" alt="Photo of {{ person.forename }}">
+    {% endif %}
+
+    {% if person.dob %}<p>Born: {{ person.dob }}</p>{% endif %}
+    {% if person.notes %}<p>{{ person.notes }}</p>{% endif %}
+    {% if person.links %}<p>{{ person.links }}</p>{% endif %}
+
+    {% if person.user_id == session.user.id %}
+        <p>
+            <a href="/person/{{ person.id }}/edit">Edit</a>
+            <a href="/person/{{ person.id }}/delete"
+               onclick="return confirm('Really delete?')">Delete</a>
+        </p>
+    {% endif %}
+
+    <h3>Stories</h3>
+
+    <section id="stories">
+        {% for story in stories %}
+            <div class="stories">
+                <header>
+                    <h3><a href="/story/{{ story.id }}">{{ story.title }}</a></h3>
+                </header>
+
+                <p>{{ story.body }}</p>
+
+                <footer>
+                    Date: {{ story.date }}
+                </footer>
+            </div>
+        {% else %}
+            <p>No stories about this person yet.</p>
+        {% endfor %}
+    </section>
+
+{% endblock %}

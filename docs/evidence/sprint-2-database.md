@@ -7,7 +7,6 @@ Implement the database, populated with test data. Create queries that retrieve t
 
 ### Specific Goals
 
-**Edit these goals as needed**
 
 - Implement the database
 - Add test data to the database
@@ -21,17 +20,29 @@ Implement the database, populated with test data. Create queries that retrieve t
     - Etc.
 
 
-## Testing FEATURE NAME HERE
+## Testing Stories display
 
-Replace this text with notes about what you are testing, how you tested it, and the outcome of the testing
+Seeing if stories display as they should and are filtered by who added them. 
 
-**PLACE SCREENSHOTS AND/OR ANIMATED GIFS OF THE TESTING HERE**
 
-![Placeholder](screenshots/placeholder.png)
+![initial database](screenshots/db1.png)
 
 ### Changes / Improvements
 
-Replace this text with notes any improvements you made as a result of the testing.
+The family a user picks is now stored in the session, and every story is saved with that family's id.
+
+**PLACE SCREENSHOTS AND/OR ANIMATED GIFS OF THE IMPROVED SYSTEM HERE**
+
+
+## Testing Tagging people in stories
+
+I added a person, posted a new story with that person ticked on the form, then checked whether their name showed on the story card.
+
+![tagging a person](tagging.png)
+
+### Changes / Improvements
+
+The people list on the story form is now limited to the chosen family
 
 **PLACE SCREENSHOTS AND/OR ANIMATED GIFS OF THE IMPROVED SYSTEM HERE**
 
@@ -48,21 +59,6 @@ Replace this text with notes any improvements you made as a result of the testin
 
 **PLACE SCREENSHOTS AND/OR ANIMATED GIFS OF THE IMPROVED SYSTEM HERE**
 
-
-## Testing FEATURE NAME HERE
-
-Replace this text with notes about what you are testing, how you tested it, and the outcome of the testing
-
-**PLACE SCREENSHOTS AND/OR ANIMATED GIFS OF THE TESTING HERE**
-
-### Changes / Improvements
-
-Replace this text with notes any improvements you made as a result of the testing.
-
-**PLACE SCREENSHOTS AND/OR ANIMATED GIFS OF THE IMPROVED SYSTEM HERE**
-
-
-## ETC...
 
 
 ## Sprint Review

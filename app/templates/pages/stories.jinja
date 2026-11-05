@@ -9,7 +9,6 @@
 
     <h2>The {{ session.family.surname }} Family</h2>
 
-    {# OTHER DETAILS HERE #}
     
     <button id="story-button"><a href="/story">Add Story</a></button>
 
@@ -23,8 +22,7 @@
             <div class="stories">
 
                 <header>
-                    <h3>{{ story.title }}</h3>
-                   
+                    <h3><a href="/story/{{ story.id }}">{{ story.title }}</a></h3>                   
                 </header>
 
                 <p>{{ story.body }}</p>

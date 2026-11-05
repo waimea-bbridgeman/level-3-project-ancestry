@@ -134,13 +134,14 @@ def process_new_user():
         db.execute(sql, params)
 
         flash("Account created. Please login", "success")
-        return redirect("/")
+        return redirect("/login")
 
 
 # -----------------------------------------------------------
 # Family Pick Page
 # -----------------------------------------------------------
 @app.get("/fam/pick")
+@login_required
 def select_family():
     with connect_db() as db:
         # Select users families
@@ -160,6 +161,7 @@ def select_family():
 # Family Page
 # -----------------------------------------------------------
 @app.get("/fam/<int:id>")
+@login_required
 def show_family_home(id):
     with connect_db() as db:
         # Select chosen family
@@ -216,6 +218,7 @@ def show_family_home(id):
 # All Stories Page
 # -----------------------------------------------------------
 @app.get("/stories")
+@login_required
 def show_all_stories():
     # Check the user has selected a family
     if not session.get("family"):
@@ -251,6 +254,7 @@ def show_all_stories():
 # Create Family Page
 # -----------------------------------------------------------
 @app.get("/fam/new")
+@login_required
 def show_create_fam():
     return render_template("pages/create-fam.jinja")
 
@@ -259,6 +263,7 @@ def show_create_fam():
 # Create Family
 # -----------------------------------------------------------
 @app.post("/fam/new")
+@login_required
 def create_fam():
     surname = request.form.get("surname", "").strip()
 
@@ -300,25 +305,16 @@ def create_fam():
 # Join Code Page
 # -----------------------------------------------------------
 @app.get("/join/new")
+@login_required
 def join_code_display():
-    with connect_db() as db:
-        # Select user_id and join code
-        sql = """
-            SELECT families.code
-            FROM families
-            JOIN members ON members.family_id = families.id
-            WHERE members.user_id = ?
-        """
-        params = (session["user"]["id"],)
-        code = db.execute(sql, params).fetchone()
-
-    return render_template("pages/join-fam.jinja", code=code)
+    return render_template("pages/join-fam.jinja")
 
 
 # -----------------------------------------------------------
 # Process join form
 # -----------------------------------------------------------
 @app.post("/join-fam")
+@login_required
 def join_code():
 
     # Get form data
@@ -347,7 +343,7 @@ def join_code():
         family_id = family["id"]
 
         # Check they are not already a member
-        sql = "SELECT id FROM members WHERE family_id=? AND user_id=?"
+        sql = "SELECT user_id FROM members WHERE family_id=? AND user_id=?"
         params = (family_id, user_id)
         member = db.execute(sql, params).fetchone()
 
@@ -371,6 +367,7 @@ def join_code():
 # Join Family Page
 # -----------------------------------------------------------
 @app.get("/join-fam")
+@login_required
 def join_fam():
     return render_template("pages/join-fam.jinja")
 
@@ -379,6 +376,7 @@ def join_fam():
 # Add Person Page
 # -----------------------------------------------------------
 @app.get("/people/new")
+@login_required
 def add_person_page():
     return render_template("pages/add-person.jinja")
 
@@ -387,6 +385,7 @@ def add_person_page():
 # All People Page
 # -----------------------------------------------------------
 @app.get("/all-people")
+@login_required
 def show_people():
     # Check if the session has a family selected
     if not session.get("family"):
@@ -411,6 +410,7 @@ def show_people():
 # Add Person
 # -----------------------------------------------------------
 @app.post("/person")
+@login_required
 def add_persondb():
     if not session.get("family"):
         flash(f"Pick or create a family first", "error")
@@ -456,25 +456,36 @@ def add_persondb():
     # Add the form data and the upload filename to the DB
     with connect_db() as db:
         sql = """
-            INSERT INTO people (forename, surname, dob, notes, image, links, family_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO people (forename, surname, dob, notes, image, links, user_id, family_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """
-        params = (forename, surname, dob, notes, unique_filename, links, family_id)
+        params = (
+            forename,
+            surname,
+            dob,
+            notes,
+            unique_filename,
+            links,
+            session["user"]["id"],
+            family_id,
+        )
         db.execute(sql, params)
 
         flash("Person added", "success")
         return redirect("/all-people")
 
+
 # -----------------------------------------------------------
 # Show Story Form
 # -----------------------------------------------------------
 @app.get("/story")
+@login_required
 def show_story_form():
     if not session.get("family"):
         flash(f"Pick or create a family first", "error")
         return redirect("/")
 
-    # 
+    #
     with connect_db() as db:
         sql = """
             SELECT id, forename, surname
@@ -487,10 +498,12 @@ def show_story_form():
 
     return render_template("pages/add-story.jinja", people=people)
 
+
 # -----------------------------------------------------------
 # Post Story
 # -----------------------------------------------------------
 @app.post("/story/new")
+@login_required
 def post_story():
     if not session.get("family"):
         flash(f"Pick or create a family first", "error")
@@ -540,10 +553,13 @@ def post_story():
 
         flash("Story added", "success")
         return redirect(f"/fam/{family_id}")
+
+
 # -----------------------------------------------------------
 # Family Management
 # -----------------------------------------------------------
 @app.get("/family-admin")
+@login_required
 def manage_fam():
     # Check there is a family in the session
     if not session.get("family"):
@@ -580,6 +596,7 @@ def manage_fam():
 # Remove member (owner use)
 # -----------------------------------------------------------
 @app.get("/member/<int:user_id>/delete")
+@login_required
 def delete_member(user_id):
     # Only allow the owner to remove members from the family
     if not session.get("family") or session["family"]["role"] != "owner":
@@ -591,7 +608,7 @@ def delete_member(user_id):
         flash(f"You can't remove yourself", "error")
         return redirect("/family-admin")
 
-    # delete the memeber from the family
+    # delete the member from the family
     with connect_db() as db:
         sql = """
             DELETE FROM members
@@ -608,6 +625,7 @@ def delete_member(user_id):
 # Leave a Family (member use)
 # -----------------------------------------------------------
 @app.get("/family/leave")
+@login_required
 def leave_family():
     if not session.get("family"):
         flash(f"Pick or create a family first", "error")
@@ -630,6 +648,367 @@ def leave_family():
     session.pop("family", None)
     flash(f"You have left the family", "success")
     return redirect("/")
+
+
+# -----------------------------------------------------------
+# View a Single Person Page
+# -----------------------------------------------------------
+@app.get("/person/<int:id>")
+@login_required
+def show_person(id):
+    if not session.get("family"):
+        flash(f"Pick or create a family first", "error")
+        return redirect("/")
+
+    family_id = session["family"]["id"]
+
+    with connect_db() as db:
+        sql = """
+            SELECT id, forename, surname, dob, notes, image, links, user_id
+            FROM people
+            WHERE id = ? AND family_id = ?
+        """
+        params = (id, family_id)
+        person = db.execute(sql, params).fetchone()
+
+        if not person:
+            flash(f"Person not found", "error")
+            return redirect("/all-people")
+
+        # Get the stories this person is tagged in
+        sql = """
+            SELECT stories.id, stories.title, stories.date, stories.body
+            FROM stories
+            JOIN involves ON involves.story_id = stories.id
+            WHERE involves.person_id = ? AND stories.family_id = ?
+        """
+        params = (id, family_id)
+        stories = db.execute(sql, params).fetchall()
+
+        return render_template("pages/person.jinja", person=person, stories=stories)
+
+
+# -----------------------------------------------------------
+# Edit Person Page (only the user that added the person)
+# -----------------------------------------------------------
+@app.get("/person/<int:id>/edit")
+@login_required
+def show_person_edit_form(id):
+    if not session.get("family"):
+        flash(f"Pick or create a family first", "error")
+        return redirect("/")
+
+    with connect_db() as db:
+        sql = """
+            SELECT id, forename, surname, dob, notes, links
+            FROM people
+            WHERE id = ? AND user_id = ? AND family_id = ?
+        """
+        params = (id, session["user"]["id"], session["family"]["id"])
+        person = db.execute(sql, params).fetchone()
+
+        if not person:
+            flash(f"You can only edit people you added", "error")
+            return redirect("/all-people")
+
+        return render_template("pages/edit-person.jinja", person=person)
+
+
+# -----------------------------------------------------------
+# Update Person
+# -----------------------------------------------------------
+@app.post("/person/<int:id>")
+@login_required
+def update_person(id):
+    if not session.get("family"):
+        flash(f"Pick or create a family first", "error")
+        return redirect("/")
+
+    # Get form data
+    forename = request.form.get("forename", "").strip()
+    surname = request.form.get("surname", "").strip()
+    dob = request.form.get("dob", "").strip()
+    notes = request.form.get("notes", "").strip()
+    links = request.form.get("links", "").strip()
+
+    # Validate data
+    if not forename and not surname:
+        flash(f"Enter at least a first or last name (even just 'Grandad')", "error")
+        return redirect(f"/person/{id}/edit")
+
+    # Escape text inputs
+    forename = html.escape(forename)
+    surname = html.escape(surname)
+    dob = html.escape(dob)
+    notes = html.escape(notes)
+    links = html.escape(links)
+
+    # Check the user added this person
+    with connect_db() as db:
+        sql = """
+            SELECT id
+            FROM people
+            WHERE id = ? AND user_id = ? AND family_id = ?
+        """
+        params = (id, session["user"]["id"], session["family"]["id"])
+        person = db.execute(sql, params).fetchone()
+
+        if not person:
+            flash(f"You can only edit people you added", "error")
+            return redirect("/all-people")
+
+        sql = """
+            UPDATE people
+            SET forename = ?, surname = ?, dob = ?, notes = ?, links = ?
+            WHERE id = ?
+        """
+        params = (forename, surname, dob, notes, links, id)
+        db.execute(sql, params)
+
+        # Only change the image if a new one was chosen
+        image = request.files.get("image", None)
+        if image and image.filename != "":
+            filename = secure_filename(image.filename)
+            random_prefix = uuid.uuid4().hex[:12]
+            unique_filename = f"{random_prefix}_{filename}"
+            filepath = os.path.join(IMAGES_FOLDER, unique_filename)
+            image.save(filepath)
+
+            sql = "UPDATE people SET image = ? WHERE id = ?"
+            params = (unique_filename, id)
+            db.execute(sql, params)
+
+        flash("Person updated", "success")
+        return redirect(f"/person/{id}")
+
+
+# -----------------------------------------------------------
+# Delete Person (only the person user that added the person)
+# -----------------------------------------------------------
+@app.get("/person/<int:id>/delete")
+@login_required
+def delete_person(id):
+    if not session.get("family"):
+        flash(f"Pick or create a family first", "error")
+        return redirect("/")
+
+    with connect_db() as db:
+        # Check the user added this person
+        sql = """
+            SELECT id
+            FROM people
+            WHERE id = ? AND user_id = ? AND family_id = ?
+        """
+        params = (id, session["user"]["id"], session["family"]["id"])
+        person = db.execute(sql, params).fetchone()
+
+        if not person:
+            flash(f"You can only delete people you added", "error")
+            return redirect("/all-people")
+
+        # Remove them from any stories, then delete them
+        sql = "DELETE FROM involves WHERE person_id = ?"
+        params = (id,)
+        db.execute(sql, params)
+
+        sql = "DELETE FROM people WHERE id = ?"
+        params = (id,)
+        db.execute(sql, params)
+
+        flash("Person deleted", "success")
+        return redirect("/all-people")
+
+
+# -----------------------------------------------------------
+# Single Story Page
+# -----------------------------------------------------------
+@app.get("/story/<int:id>")
+@login_required
+def show_story(id):
+    if not session.get("family"):
+        flash(f"Pick or create a family first", "error")
+        return redirect("/")
+
+    with connect_db() as db:
+        sql = """
+            SELECT stories.id, stories.title, stories.date, stories.body, stories.user_id,
+                   users.forename, users.surname
+            FROM stories
+            JOIN users ON users.id = stories.user_id
+            WHERE stories.id = ? AND stories.family_id = ?
+        """
+        params = (id, session["family"]["id"])
+        story = db.execute(sql, params).fetchone()
+
+        if not story:
+            flash(f"Story not found", "error")
+            return redirect("/stories")
+
+        # Get who is tagged in the story
+        sql = """
+            SELECT people.id, people.forename, people.surname
+            FROM involves
+            JOIN people ON people.id = involves.person_id
+            WHERE involves.story_id = ?
+        """
+        params = (id,)
+        tagged = db.execute(sql, params).fetchall()
+
+        return render_template("pages/story.jinja", story=story, tagged=tagged)
+
+
+# -----------------------------------------------------------
+# Edit Story Page (story's author only)
+# -----------------------------------------------------------
+@app.get("/story/<int:id>/edit")
+@login_required
+def show_story_edit_form(id):
+    if not session.get("family"):
+        flash(f"Pick or create a family first", "error")
+        return redirect("/")
+
+    with connect_db() as db:
+        sql = """
+            SELECT id, title, date, body
+            FROM stories
+            WHERE id = ? AND user_id = ? AND family_id = ?
+        """
+        params = (id, session["user"]["id"], session["family"]["id"])
+        story = db.execute(sql, params).fetchone()
+
+        if not story:
+            flash(f"You can only edit your own stories", "error")
+            return redirect("/stories")
+
+        # All the people in the family
+        sql = """
+            SELECT id, forename, surname
+            FROM people
+            WHERE family_id = ?
+            ORDER BY forename
+        """
+        params = (session["family"]["id"],)
+        people = db.execute(sql, params).fetchall()
+
+        # The people already tagged in this story
+        sql = """
+            SELECT person_id
+            FROM involves
+            WHERE story_id = ?
+        """
+        params = (id,)
+        tagged = db.execute(sql, params).fetchall()
+
+        tagged_ids = []
+        for row in tagged:
+            tagged_ids.append(row["person_id"])
+
+        return render_template(
+            "pages/edit-story.jinja", story=story, people=people, tagged_ids=tagged_ids
+        )
+
+
+# -----------------------------------------------------------
+# Update Story (story's author only)
+# -----------------------------------------------------------
+@app.post("/story/<int:id>")
+@login_required
+def update_story(id):
+    if not session.get("family"):
+        flash(f"Pick or create a family first", "error")
+        return redirect("/")
+
+    # Get form data
+    title = request.form.get("title", "").strip()
+    body = request.form.get("body", "").strip()
+    date = request.form.get("date", "").strip()
+    people_ids = request.form.getlist("people")
+
+    # Validate data
+    if not title:
+        flash(f"Title is required", "error")
+        return redirect(f"/story/{id}/edit")
+
+    if len(title) > 40:
+        flash(f"Title is too long (max 40 chars)", "error")
+        return redirect(f"/story/{id}/edit")
+
+    # Escape text inputs
+    title = html.escape(title)
+    body = html.escape(body)
+    date = html.escape(date)
+
+    with connect_db() as db:
+        # Check it is the user's own story
+        sql = """
+            SELECT id
+            FROM stories
+            WHERE id = ? AND user_id = ? AND family_id = ?
+        """
+        params = (id, session["user"]["id"], session["family"]["id"])
+        story = db.execute(sql, params).fetchone()
+
+        if not story:
+            flash(f"You can only edit your own stories", "error")
+            return redirect("/stories")
+
+        sql = """
+            UPDATE stories
+            SET title = ?, body = ?, date = ?
+            WHERE id = ?
+        """
+        params = (title, body, date, id)
+        db.execute(sql, params)
+
+        # Replace the tagged people with the ones ticked now
+        sql = "DELETE FROM involves WHERE story_id = ?"
+        params = (id,)
+        db.execute(sql, params)
+
+        for person_id in people_ids:
+            sql = "INSERT INTO involves (story_id, person_id) VALUES (?, ?)"
+            params = (id, person_id)
+            db.execute(sql, params)
+
+        flash("Story updated", "success")
+        return redirect(f"/story/{id}")
+
+
+# -----------------------------------------------------------
+# Delete Story (story's author only)
+# -----------------------------------------------------------
+@app.get("/story/<int:id>/delete")
+@login_required
+def delete_story(id):
+    if not session.get("family"):
+        flash(f"Pick or create a family first", "error")
+        return redirect("/")
+
+    with connect_db() as db:
+        # Check it is the user's own story
+        sql = """
+            SELECT id
+            FROM stories
+            WHERE id = ? AND user_id = ? AND family_id = ?
+        """
+        params = (id, session["user"]["id"], session["family"]["id"])
+        story = db.execute(sql, params).fetchone()
+
+        if not story:
+            flash(f"You can only delete your own stories", "error")
+            return redirect("/stories")
+
+        # Remove the tags, then the story
+        sql = "DELETE FROM involves WHERE story_id = ?"
+        params = (id,)
+        db.execute(sql, params)
+
+        sql = "DELETE FROM stories WHERE id = ?"
+        params = (id,)
+        db.execute(sql, params)
+
+        flash("Story deleted", "success")
+        return redirect(f"/fam/{session['family']['id']}")
 
 
 # -----------------------------------------------------------

@@ -1,0 +1,27 @@
+{% extends 'pages/_base.jinja' %}
+
+{% block title %}Story{% endblock %}
+
+{% block content %}
+
+    <h2>{{ story.title }}</h2>
+
+    <div class="card">
+        <p>{{ story.body }}</p>
+
+        <p>Posted by {{ story.forename }} {{ story.surname }} on {{ story.date }}</p>
+
+        {% for person in tagged %}
+            <a class="tag" href="/person/{{ person.id }}">{{ person.forename }} {{ person.surname }}</a>
+        {% endfor %}
+
+        {% if story.user_id == session.user.id %}
+            <p>
+                <a href="/story/{{ story.id }}/edit">Edit</a>
+                <a href="/story/{{ story.id }}/delete"
+                   onclick="return confirm('Really delete?')">Delete</a>
+            </p>
+        {% endif %}
+    </div>
+
+{% endblock %}

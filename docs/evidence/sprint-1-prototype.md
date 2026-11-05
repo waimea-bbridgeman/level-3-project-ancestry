@@ -7,8 +7,6 @@ Develop a design for the database and a UI prototype that simulates the key func
 
 ### Specific Goals
 
-**Edit these goals as needed**
-
 - Design the database:
     - Tables
     - Fields / types
@@ -25,22 +23,23 @@ Develop a design for the database and a UI prototype that simulates the key func
 
 ## Initial Database Design
 
-Replace this text with notes regarding the DB design.
+
 
 ![DB Design](screenshots/DB-V2.png)
 
 
 ### Required Data Input
 
-Replace this text with a description of what data will be input, and where / how it will be obtained.
+The database will get data from forms inputted by the user. This data will be images, text and integers. 
 
 ### Required Data Output
 
-Replace this text with a description of the outputs for the system - what types of data will be displayed?
+Images and text will be displayed. This will be in the form of stories/people. The images will be used to show a person in the "all people" page. 
 
 ### Required Data Processing
 
-Replace this text with a description of how the data will be processed to achieve the desired output(s) - any processes / formulae?
+For example, when a user makes an account their password will be hashed and stored as that hash. And when a family is created a random 6 digit code is created and added to that family. 
+
 
 
 ## UI 'Flow'
@@ -77,10 +76,7 @@ This was a similar process to the flow design where i checked everything worked 
 
 ### Changes / Improvements
 
-Replace this text with notes any improvements you made as a result of the testing.
-
-*FIGMA IMPROVED PROTOTYPE - PLACE THE FIGMA EMBED CODE HERE - MAKE SURE IT IS SET SO THAT EVERYONE CAN ACCESS IT*
-
+Colour!
 
 ## Refined UI Prototype
 
@@ -88,20 +84,18 @@ Having established the layout of the UI screens, the prototype was refined visua
 
 This Figma demo shows the UI with refinements applied:
 
-*FIGMA REFINED PROTOTYPE - PLACE THE FIGMA EMBED CODE HERE - MAKE SURE IT IS SET SO THAT EVERYONE CAN ACCESS IT*
+![V3 Design](screenshots/refinedUI.png)
+
+[Click here to see the design](https://design.penpot.app/?screen=viewer&file-id=64054412-1123-81ed-8008-5d161b0f687c&page-id=f0485fb1-4e63-8165-8008-39076505d61b&section=interactions&index=0&share-id=3e2d256a-1c98-41f8-a540-70f15af1b9ee)
 
 ### Testing
 
-Replace this text with notes about what you did to test the UI flow and the outcome of the testing.
+I gave the refined version of my UI to my stakeholder for feedback and he said it "looked good". He liked how the colours work together. 
 
-### Changes / Improvements
-
-Replace this text with notes any improvements you made as a result of the testing.
-
-*FIGMA IMPROVED REFINED PROTOTYPE - PLACE THE FIGMA EMBED CODE HERE - MAKE SURE IT IS SET SO THAT EVERYONE CAN ACCESS IT*
 
 
 ## Sprint Review
 
 Replace this text with a statement about how the sprint has moved the project forward - key success point, any things that didn't go so well, etc.
 
+The sprint has moved the project along nicely and i can now start coding it. It gave a clear goal and makes it easier to work through. Having so many pages made it take a while to make though which has put me slightly behind. 

@@ -7,7 +7,6 @@ Develop the system until it is fully featured, with a refined UI and it satisfie
 
 ### Specific Goals
 
-**Edit these goals as needed**
 
 - Refine the design and UI of the website
 - Refine the user experience (UX) of the system
@@ -55,10 +54,7 @@ Replace this text with notes any improvements you made as a result of the testin
 **PLACE SCREENSHOTS AND/OR ANIMATED GIFS OF THE IMPROVED SYSTEM HERE**
 
 
-## ETC...
-
 
 ## Sprint Review
 
-Replace this text with a statement about how the sprint has moved the project forward - key success point, any things that didn't go so well, etc.
-
+The project works well. You can add people and stories to the app as well as join a family. Everything is filtered by that family so no one can see other families information.
