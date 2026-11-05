@@ -38,7 +38,7 @@ The family a user picks is now stored in the session, and every story is saved w
 
 I added a person, posted a new story with that person ticked on the form, then checked whether their name showed on the story card.
 
-![tagging a person](tagging.png)
+![tagging people](screenshots/tagging.png)
 
 ### Changes / Improvements
 
