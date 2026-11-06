@@ -13,48 +13,53 @@ Develop the system until it is fully featured, with a refined UI and it satisfie
 - Perform final, full-system testing
 
 
-## Testing FEATURE NAME HERE
+## Testing mobile view
 
-Replace this text with notes about what you are testing, how you tested it, and the outcome of the testing
+I opened the app on my phone to look at the layout of everything. 
 
-**PLACE SCREENSHOTS AND/OR ANIMATED GIFS OF THE TESTING HERE**
-
-![Placeholder](screenshots/placeholder.png)
-
-### Changes / Improvements
-
-Replace this text with notes any improvements you made as a result of the testing.
-
-**PLACE SCREENSHOTS AND/OR ANIMATED GIFS OF THE IMPROVED SYSTEM HERE**
+Somethings, like adding a person got quite long and meant lots of scrolling on mobile. 
 
 
-## Testing FEATURE NAME HERE
-
-Replace this text with notes about what you are testing, how you tested it, and the outcome of the testing
-
-**PLACE SCREENSHOTS AND/OR ANIMATED GIFS OF THE TESTING HERE**
+![poor layout for tagged people](screenshots/bad-tagging.png)
 
 ### Changes / Improvements
 
-Replace this text with notes any improvements you made as a result of the testing.
+Added a details tag so that it is collapsible which makes it look cleaner. 
 
-**PLACE SCREENSHOTS AND/OR ANIMATED GIFS OF THE IMPROVED SYSTEM HERE**
+![layout fixed](screenshots/dropdown.png)
 
 
-## Testing FEATURE NAME HERE
+## Testing admin page visibility  
 
-Replace this text with notes about what you are testing, how you tested it, and the outcome of the testing
+Log in with a member account and a owner account to see what is displayed in the family admin page 
 
-**PLACE SCREENSHOTS AND/OR ANIMATED GIFS OF THE TESTING HERE**
+![join code](screenshots/join-code.png)
+
+![member view](screenshots/member-view.png)
 
 ### Changes / Improvements
 
-Replace this text with notes any improvements you made as a result of the testing.
+The leave family button was off to the side for the member which looked odd so i moved it to the middle.
 
-**PLACE SCREENSHOTS AND/OR ANIMATED GIFS OF THE IMPROVED SYSTEM HERE**
+![moved leave button](screenshots/better-member.png)
+
+
+## Testing Logout button 
+
+Giving my app to my stakeholder, he said it would make sense for the logout button to be the furthest link to the right. 
+
+![logout button](screenshots/logout.png)
+
+### Changes / Improvements
+
+I moved the logout button to the furthest right position. 
+
+![logout button](screenshots/logout-moved.png)
 
 
 
 ## Sprint Review
 
-The project works well. You can add people and stories to the app as well as join a family. Everything is filtered by that family so no one can see other families information.
+This sprint refined the app and tested the whole system. Testing on a phone showed that the people picker on the story form took up too much room, so I changed it to a collapsible dropdown. Testing the Family Admin page with an owner account and a member account showed the layout needed work, and my stakeholder suggested that Logout should be the furthest link to the right, which I changed.
+
+**Things that did not go as well** - Small errors and invisible buttons that only showed up in testing and the time spent on layout. 

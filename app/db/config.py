@@ -144,7 +144,8 @@ class MembersTable:
 
     SEED_DATA = """
          INSERT INTO members (family_id, user_id, role)
-        VALUES (1, 1, "owner")
+        VALUES (1, 1, "owner"),
+        (1, 2, "member")
     """
 
 TABLES = [

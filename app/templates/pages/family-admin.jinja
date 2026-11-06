@@ -8,9 +8,10 @@ Family Admin
 
 <h2>{{ family.surname }} Family</h2>
 
+{% if session.family.role == "owner" %}
 <h3>Join code</h3>
 <p class="join-code">{{ family.code }}</p>
-
+{% endif %}
 <h3>Members</h3>
 
 <ul id="members">
@@ -26,5 +27,10 @@ Family Admin
     </li>
     {% endfor %}
 </ul>
+
+{% if session.family.role != "owner" %}
+<a class="button" id="leave-button" href="/family/leave" onclick="return confirm('Really leave this family?')">Leave
+    Family</a>
+{% endif %}
 
 {% endblock %}

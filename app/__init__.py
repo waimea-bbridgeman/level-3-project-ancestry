@@ -434,22 +434,17 @@ def add_persondb():
     notes = html.escape(notes)
     links = html.escape(links)
 
-    # Get the file selected via the form
+    # Get the file selected from the form
     image = request.files.get("image", None)
-    if not image or image.filename == "":
-        flash(f"There was a problem uploading the image", "error")
-        return redirect("/people/new")
 
-    # Sanitise filename and make it unique
-    filename = secure_filename(image.filename)
-    random_prefix = uuid.uuid4().hex[:12]
-    unique_filename = f"{random_prefix}_{filename}"
-
-    # Get the path of the upload folder
-    filepath = os.path.join(IMAGES_FOLDER, unique_filename)
-
-    # Save file to disk
-    image.save(filepath)
+    # Only save an image if one was chosen
+    unique_filename = ""
+    if image and image.filename != "":
+        filename = secure_filename(image.filename)
+        random_prefix = uuid.uuid4().hex[:12]
+        unique_filename = f"{random_prefix}_{filename}"
+        filepath = os.path.join(IMAGES_FOLDER, unique_filename)
+        image.save(filepath)
 
     family_id = session["family"]["id"]
 

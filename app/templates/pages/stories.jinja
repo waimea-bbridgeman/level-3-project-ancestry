@@ -1,5 +1,5 @@
 {#=====================================================
-  Story display page
+Story display page
 =====================================================#}
 
 {% extends 'pages/_base.jinja' %}
@@ -7,47 +7,51 @@
 
 {% block content %}
 
-    <h2>The {{ session.family.surname }} Family</h2>
+<h2>The {{ session.family.surname }} Family</h2>
 
-    
-    <button id="story-button"><a href="/story">Add Story</a></button>
 
-    <h2>{{ title }}</h2>
-    
+<a class="button" id="story-button" href="/story">Add Story</a>
 
-    <section id="stories">
+<h2>{{ title }}</h2>
 
-        {% for story in stories %}
-      
-            <div class="stories">
 
-                <header>
-                    <h3><a href="/story/{{ story.id }}">{{ story.title }}</a></h3>                   
-                </header>
+<section id="stories">
 
-                <p>{{ story.body }}</p>
+    {% for story in stories %}
 
-                {% for person in tagged %}
-                    {% if person.story_id == story.id %}
-                        Involves: <span class="tag">{{ person.forename }} {{ person.surname }}</span>
-                    {% endif %}
-                {% endfor %}
-                
-                <footer>
-                    Date: {{ story.date }}
-                </footer>
+    <div class="stories">
 
-            </div>
+        <header>
+            <h3><a href="/story/{{ story.id }}">{{ story.title }}</a></h3>
+        </header>
 
-        {% else %}
+        <p>{{ story.body }}</p>
 
-            <p>No Stories!</p>
-
+        {% for person in tagged %}
+            {% if person.story_id == story.id %}
+                Involves: <span class="tag">{{ person.forename }} {{ person.surname }}</span>
+            {% endif %}
         {% endfor %}
 
-        
+        <footer>
+            Date: {{ story.date }}
+        </footer>
 
-    </section>
+        {% if story.user_id == session.user.id %}
+            <div class="edit-button">
+                <a class="button" href="/story/{{ story.id }}/edit">Edit</a>
+            </div>
+        {% endif %}
+
+    </div>
+
+    {% else %}
+
+    <p>No Stories!</p>
+
+    {% endfor %}
+
+
+</section>
 
 {% endblock %}
-

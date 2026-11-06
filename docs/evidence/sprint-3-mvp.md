@@ -7,8 +7,6 @@ Continue to develop the web application to the point that it provides all key fu
 
 ### Specific Goals
 
-**Edit these goals as needed**
-
 - Create the following web pages:
     - Form for ...
     - Etc.
@@ -16,52 +14,61 @@ Continue to develop the web application to the point that it provides all key fu
     - Add a new ...
     - Etc.
 
+## Testing access to other peoples stories
 
-## Testing FEATURE NAME HERE
+Type the story edit into the search bar for a story i didn't post (localhost:5000/story/5/edit). 
 
-Replace this text with notes about what you are testing, how you tested it, and the outcome of the testing
+I got a flash message telling me i could only edit my stories. 
 
-**PLACE SCREENSHOTS AND/OR ANIMATED GIFS OF THE TESTING HERE**
-
-![Placeholder](screenshots/placeholder.png)
-
-### Changes / Improvements
-
-Replace this text with notes any improvements you made as a result of the testing.
-
-**PLACE SCREENSHOTS AND/OR ANIMATED GIFS OF THE IMPROVED SYSTEM HERE**
-
-
-## Testing FEATURE NAME HERE
-
-Replace this text with notes about what you are testing, how you tested it, and the outcome of the testing
-
-**PLACE SCREENSHOTS AND/OR ANIMATED GIFS OF THE TESTING HERE**
+![improved story display](screenshots/story-edit.gif)
 
 ### Changes / Improvements
 
-Replace this text with notes any improvements you made as a result of the testing.
+Worked as expected. 
 
-**PLACE SCREENSHOTS AND/OR ANIMATED GIFS OF THE IMPROVED SYSTEM HERE**
+## Testing Edit button 
 
+After talking to my stakeholder, he suggested that an edit button rather than a link would be better to access the edit story form. This test checks whether that works. 
 
-## Testing FEATURE NAME HERE
-
-Replace this text with notes about what you are testing, how you tested it, and the outcome of the testing
-
-**PLACE SCREENSHOTS AND/OR ANIMATED GIFS OF THE TESTING HERE**
+![edit button](screenshots/edit-button.gif)
 
 ### Changes / Improvements
 
+The title now links to a single story rather than the editing page. 
+
+![edit button](screenshots/title-link.gif)
+
+## Testing joining family
+
+Testing whether you can join a family by entering a join code. 
+
+It worked properly just needs some attention in css. 
+
+![edit button](screenshots/joining-fam.gif)
+
+### Changes / Improvements
+
+The visual look of the form is terrible, i only knew where the input was because i had previously submitted the form and it gave me 'please fill out this field'. But css comes in the next sprint.  
+
+## Testing removing member from family
+
 Replace this text with notes any improvements you made as a result of the testing.
 
-**PLACE SCREENSHOTS AND/OR ANIMATED GIFS OF THE IMPROVED SYSTEM HERE**
+The member was removed successfully.
 
+![edit button](screenshots/remove.gif)
 
-## ETC...
+*Member that was removed view 
+![edit button](screenshots/member-removed.png)
+
+### Changes / Improvements
+
+Worked as expected. 
 
 
 ## Sprint Review
 
-Replace this text with a statement about how the sprint has moved the project forward - key success point, any things that didn't go so well, etc.
+This sprint moved the project from a site that displays data to a fully working app. Users can now add, edit and delete their own stories and people, tag people in stories and join or leave families. Checks were added so that typing an edit or delete URL for someone else's story is refused with an error message. I also made the image optional when adding a person, because the form used to reject anyone without a photo.
+
+**Things that didn't go well** - Some bugs only showed up when testing with a second account, so I had to go back and fix routes I thought were finished.
 
