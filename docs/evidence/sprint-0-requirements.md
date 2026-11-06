@@ -1,39 +1,128 @@
-# Project Final Review and Reflection
+# Project Requirements
 
-## Addressing Relevant Implications
+## Identified Problem or Need
 
-### Privacy
+Family history is difficult to preserve and organise. 
 
-My requirements said I should only collect the information I need and not store it in an unsafe way. The only personal information the app collects is a first name, last name, username and password. Passwords are never stored in plain text, they are hashed with generate_password_hash when someone signs up, and login compares them with check_password_hash. Uploaded image names are made safe with secure_filename and every page that shows family data uses @login_required, and everything is filtered by the family stored in the session, so people outside a family can't see its stories or people. A family can only be joined with its 6-character code, and only the owner can see that code.
 
-### Legal
+## End-User Requirements
 
-I said that copyright wouldn't affect me much because the app only stores records and photos that are relevant to my family, and that storing user data properly would matter most. The app doesn't collect anything extra about users, and their passwords are hashed in the database. Photos and stories are added by the family members themselves, and each family is private and only joined through its code. People can edit or delete the stories and people they added, so they stay in control of their own information.
+My end users should be able to post text and photos on my app. They will expect that they're able to edit their posts as well as delete any. 
+They should also be stored properley rather then just put into a list. 
 
-### Functionality
+## Proposed Solution
 
-My requirements said users should be able to post text and photos and edit or delete them, and that the data should be stored properly instead of in a list. The app does this. Stories and people (with optional photos and social media links) can be added, edited and deleted by the person who added them. The data is kept in a database of six linked tables (users, families, members, people, stories and involves), and images are uploaded to a folder with only the filename stored in the database. I tested the app on a computer and a phone, and testing found and fixed a lot of errors, such as stories showing in the wrong family, tags not saving and members not listing.
+I will make an app that records and organises family memories. This includes photos and text that are able to be edited and deleted. 
 
-### Aesthetics
+# Relevant Implications
 
-I planned one clean, consistent colour palette. The whole site uses the same colours, set once as CSS variables (dark blue, an orange accent and a cream paper colour), so buttons, forms, story cards and people cards all match, and the same header and navigation are on every page. This keeps the site looking trustworthy instead of "dodgy".
+## Privacy
 
-### Usability
+Privacy as an implication refers to the collection of the users infomation and not taking any info that isn't neccasary and not storing that data in an unsecure place or state.
+For example, don't store passwords in plaintext.
 
-I wanted every page to have a way out and clear messages, because older users could get lost. The navigation is the same on every page, and each action shows a clear success or error message (for example "Story added" or "You can only edit your own stories"). The edit forms have a Cancel button, and mistakes like adding a person with no name give an error that explains what to enter. On the story form, the people picker is a collapsible dropdown of checkboxes, which keeps the form short on a phone. Following my stakeholder's feedback, the Edit button now sits in the corner of each story card and Logout is the furthest link to the right.
+### Relevance to the System
 
-## UX Principles
+This implication is relevant to my app because i will be storing data about my user in the form of usernames and passwords. 
 
-- **Know your user:** I tested the layout on a phone as well as a computer, and changed the people picker to a dropdown because the form was too long on mobile.
-- **Consistent and clear:** The same layout, navigation and button styles are used on every page, and buttons are in obvious places, such as edit in the corner of each card and leave family centred on the family page.
-- **Test and improve:** I gave the app to my stakeholder, who suggested the edit button and the Logout position, and I changed both.
+### Impact / Considerations
 
-## Overall Review
+When making my project I will need to hash any sensitive information and not share any with outside sources. 
 
-**What went well** - The core of the app works, users can sign up, create or join a family, and add, view, edit and delete stories and people with photos, all stored properly in a linked database. Filtering everything by the family stored in the session kept each family's data private. 
+## Legal 
 
-**What didn't go so well** - I lost time to errors from redirects and links pointing at pages that didn't exist, and from queries with the wrong number of parameters. Every time I changed the database structure I had to reset the database and lose my test data. Docker, running in a OneDrive folder, caused a "disk I/O error" that stopped the app from starting for a while.
+This refers to following the law around keeping and storing relevant users data as well as copyright laws.  
 
-**How did the testing/trialling impact the final system** - Testing with more than one account and more than one family found the biggest problems which was stories showing in the wrong family, people from other families being taggable, and the join code being visible to every member. Fixing these led to the family_id column on stories, the family-filtered queries, the owner-only join code and the checkbox people picker. Feedback from my stakeholder changed the Edit button and the position of Logout, and testing on a phone led to the dropdown for tagging people.
+### Relevance to the System
 
-**What would I do differently** - I would plan the database fully before building, including family ids and who added each record, so I didn't have to keep resetting it. 
+As im only storing records and data that have relevance to my family I doubt copyright laws will effect me, however storing user data properly will. 
+
+### Impact / Considerations
+
+Storing users info will have to be hashed and stored in a secure database. 
+
+
+## Functionality 
+
+Making the website work well. Things shouldnt't load slow or break. 
+
+### Relevance to the System
+
+Storing data is great but if you can't view it then its sort of pointless. 
+
+### Impact / Considerations
+
+Testing on all platforms, not only computer but phone and tablet too. As well as being thorough in testing to make sure evrything works. 
+
+
+
+## Aesthetics
+
+Making the website look good. Usually meaning one consitent colour palet throughout the website. 
+
+### Relevance to the System
+
+This implication somewhat impacts functionality. If the website doesn't look good it can confuse the user and make the website seem dodgy. 
+
+### Impact / Considerations
+
+Using one clean and consistent colour palet throughout my website 
+
+
+
+## Usability 
+
+How complex the website is to use. If the website keeps getting into dead ends (no back button) then old people might struggle to use it and younger people may find it frustrating. 
+
+### Relevance to the System
+
+Given that old people will use the site who aren't very tech savy having clear loading messages and back buttons will help them not get lost or confused. 
+
+### Impact / Considerations
+
+I will make sure that every page has a way of getting back out with clear error and status messages 
+
+
+
+# User Experience (UX) Principles
+
+
+## ## Know your user
+
+Catering to other peoples way of doing things/thinking. Don't design the app strictly for laptop if your user will use the app on mobile.
+
+### Relevance to the System
+
+There will be a variety of ages that use my app. This entails that users will likely use different devices to access the app.
+
+### Impact / Considerations
+
+Testing and considering the layout for mobile as well as computer. Getting feedback on both layouts should help me with this.
+
+
+## Consistent and clear 
+
+Keeping the layout the same throughout the app. Don't use a nav bar to access different pages then make it into a waffle menu on a different page.
+
+### Relevance to the System
+
+Again, people of all ages and understanding of technology would use the app, therefore making the app clear and consistent should remove a lot of confusion for older users
+
+### Impact / Considerations
+
+Follow the same clear layout throughout the app. 
+Placing buttons and links in an obvious place.
+Displaying text in a clear and concise way. 
+
+
+## Test and improve
+
+Test everything. People outside the design process should test it too. 
+
+### Relevance to the System
+
+Many older users may find themselves so deep into the website it breaks and confuses them. This means I need to test the whole website with outside people too.
+
+### Impact / Considerations
+
+Test the whole website. 
